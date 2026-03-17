@@ -1,0 +1,41 @@
+﻿@model IEnumerable<AppWeb.Models.Videojuego>
+
+@{
+    ViewData["Title"] = "Lista de Videojuegos";
+}
+
+<h2>Lista de Videojuegos</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Agregar Nuevo Videojuego</a>
+</p>
+
+<table class="table table-striped mt-3">
+    <thead>
+
+        <tr>
+            <th>Título</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var juego in Model)
+        {
+            <tr>
+                <td>@juego.Titulo</td>
+                @* <td>@juego.imagen</td> *@
+                <td>$@juego.Precio</td>
+                <td>@juego.Categoria</td>
+                <td>@juego.Descripcion</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@juego.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Details" asp-route-id="@juego.Id" class="btn btn-sm btn-info">Ver</a>
+                    <a asp-action="Delete" asp-route-id="@juego.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
