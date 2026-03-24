@@ -1,7 +1,7 @@
 ﻿@model AppWeb.Models.Videojuego
 
 <h2>Editar Videojuegos</h2>
-<form asp-action="Edit">
+<form asp-action="Edit" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
     <div>
         <label>Titulo</label>

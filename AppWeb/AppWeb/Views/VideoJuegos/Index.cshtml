@@ -15,6 +15,7 @@
 
         <tr>
             <th>Título</th>
+            <th>Imagen</th>
             <th>Precio</th>
             <th>Categoría</th>
             <th>Descripción</th>
@@ -26,13 +27,21 @@
         {
             <tr>
                 <td>@juego.Titulo</td>
-                @* <td>@juego.imagen</td> *@
+                <td>
+                    @if (!string.IsNullOrEmpty(juego.imagen))
+                    {
+                        <img src="@juego.imagen" style="width:80px; height:60px; object-fit:cover; border-radius:4px;" />
+                    }
+                    else
+                    {
+                        <span>Sin imagen</span>
+                    }
+                </td>
                 <td>$@juego.Precio</td>
                 <td>@juego.Categoria</td>
                 <td>@juego.Descripcion</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@juego.Id" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Details" asp-route-id="@juego.Id" class="btn btn-sm btn-info">Ver</a>
                     <a asp-action="Delete" asp-route-id="@juego.Id" class="btn btn-sm btn-danger">Eliminar</a>
                 </td>
             </tr>

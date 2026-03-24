@@ -20,11 +20,7 @@ namespace AppWeb.Data
                 .HasIndex(u => u.Correo)
                 .IsUnique();
 
-            modelBuilder.Entity<Compra>()
-                .HasOne(c => c.Usuarios)
-                .WithMany(u => u.Compras)
-                .HasForeignKey(c => c.UsuarioId)
-                .OnDelete(DeleteBehavior.Cascade); 
+
 
                 modelBuilder.Entity<Compra>()
                 .HasOne(c => c.Videojuegos)

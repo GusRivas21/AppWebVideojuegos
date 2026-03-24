@@ -1,41 +1,90 @@
-﻿@* @model Notas *@
-
+﻿@model IEnumerable<AppWeb.Models.Videojuego>
 @{
-    ViewData["Title"] = "Home Page";
-    // Layout = "_Layout1";
+    ViewData["Title"] = "Videojuegos";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<div class="container mt-5">
+    <div class="row text-center mb-5">
 
-<h2>Videojuegos disponibles</h2>
-
-<div class="row">
-    @foreach (var juego in Model)
-    {
-        <div class="col-md-4">
-            <div class="card-mb-3">
-                <div class="card-body">
-                    <img src="@juego.imagen" width="120" />
-                    <h5 class="card-title">@juego.Titulo</h5>
-                    <p class="card-text">@juego.Descripcion</p>
-                    <p><strong>Categoria: </strong>@juego.Categoria</p>
-                    <p><strong>Precio: </strong>@juego.Precio</p>
-                </div>
+        <!-- CATEGORÍAS -->
+        <div class="col-md-3 mb-3">
+            <div class="feature-card">
+                <i class="fas fa-gamepad"></i>
+                <h5>Categorías</h5>
+                <p>Explora por tipo de juego</p>
             </div>
         </div>
-    }
-</div>
 
-@* <form asp-controller="Home" asp-action="Calcular" method="post">
-    <input type="number" asp-for="n1" placeholder="Numero 1"/> <br /> <br />
-    <input type="number" asp-for="n2" placeholder="Numero 2" /> <br /> <br />
-    <input type="number" asp-for="n3" placeholder="Numero 3" /> <br /> <br />
+        <!-- MÁS VENDIDOS -->
+        <div class="col-md-3 mb-3">
+            <div class="feature-card">
+                <i class="fas fa-fire"></i>
+                <h5>Más Vendidos</h5>
+                <p>Los juegos más populares</p>
+            </div>
+        </div>
 
-    <br /> <br />
-    <input type="submit" name="name" value="Calcular"/>
-</form> *@
+        <!-- NUEVOS -->
+        <div class="col-md-3 mb-3">
+            <div class="feature-card">
+                <i class="fas fa-star"></i>
+                <h5>Nuevos Juegos</h5>
+                <p>Lo último en la tienda</p>
+            </div>
+        </div>
 
-@* <h1> @Model.promedio</h1> *@
+        <!-- PROMOCIONES -->
+        <div class="col-md-3 mb-3">
+            <div class="feature-card">
+                <i class="fas fa-tags"></i>
+                <h5>Promociones</h5>
+                <p>Ofertas especiales</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <h2 class="text-center fw-bold mb-4" style="color: #FFD700;"> Videojuegos Disponibles</h2>
+    <div class="row g-4">
+        @foreach (var juego in Model)
+        {
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card game-card h-100">
+
+                    <!-- 🔴 BADGE SUPERIOR -->
+                    <div class="badge-top">+12</div>
+
+                    <!-- ❤️ FAVORITO -->
+                    <div class="favorite">
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
+
+                    <!-- IMAGEN -->
+                    <img src="@juego.imagen"
+                         class="card-img-top game-img" />
+
+                    <div class="card-body d-flex flex-column">
+
+                        <!-- TÍTULO -->
+                        <h5 class="card-title fw-bold">
+                            @juego.Titulo
+                        </h5>
+
+
+                        <!-- PRECIO -->
+                        <h4 class="price mt-2">
+                            $@juego.Precio
+                        </h4>
+
+                        <!-- CATEGORÍA -->
+                        <div class="d-flex align-items-center mt-auto">
+                            <i class="fa-solid fa-gamepad me-2 text-warning"></i>
+                            <span class="text-muted">@juego.Categoria</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>

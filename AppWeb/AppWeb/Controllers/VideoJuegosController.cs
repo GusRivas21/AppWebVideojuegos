@@ -50,9 +50,22 @@ namespace AppWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int? id, Videojuego juego, IFormFile? archivoImagen)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
+            
+            var juego = await _context.Videojuegos.FindAsync(id);
+            if (juego == null) return NotFound();
+            return View(juego);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Videojuego juego, IFormFile? archivoImagen)
+        {
+            if (id != juego.Id) 
+                return NotFound();
 
             var juegoBD = await _context.Videojuegos.FindAsync(id);
             if (juegoBD == null) return NotFound();
@@ -61,6 +74,7 @@ namespace AppWeb.Controllers
             {
                 juegoBD.Titulo = juego.Titulo;
                 juegoBD.Precio = juego.Precio;
+                juegoBD.imagen = juego.imagen;
                 juegoBD.Categoria = juego.Categoria;
                 juegoBD.Descripcion = juego.Descripcion;
 
@@ -97,30 +111,6 @@ namespace AppWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(juegoBD);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Videojuego juego)
-        {
-            if (id != juego.Id) return NotFound();
-
-            if (!ModelState.IsValid)
-                return View(juego);
-
-            try
-            {
-                _context.Update(juego);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Videojuegos.Any(e => e.Id == juego.Id))
-                    return NotFound();
-                else
-                    throw;
-            }
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int? id)
