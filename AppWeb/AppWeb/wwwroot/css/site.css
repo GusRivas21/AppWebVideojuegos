@@ -1,24 +1,22 @@
-/*html, body {
+html, body {
     height: 100%;
-}*/
+}
 
 body {
     display: flex;
     flex-direction: column;
     margin: 0;
     min-height: 100vh;
-    /* Tu fondo intacto xd */
     /*background: linear-gradient(to bottom, #43CBFF, #9708CC);*/
     background: linear-gradient(to bottom, #43CBFF, #000);
     background-repeat: no-repeat;
     background-attachment: fixed;
-    color: white; /* Letra blanca por defecto para contrastar con el fondo oscuro */
+    color: white;
 }
 
-/* --- NAVEGACIÓN --- */
 .navbar-custom {
-    background-color: rgba(15, 15, 20, 0.85); /* Oscuro con un poco de transparencia */
-    backdrop-filter: blur(10px); /* Desenfoque detrás del menú */
+    background-color: rgba(15, 15, 20, 0.85);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -29,7 +27,7 @@ body {
     }
 
         .navbar-custom .nav-link:hover {
-            color: #43CBFF; /* Brillo celeste al pasar el mouse */
+            color: #43CBFF; 
             text-shadow: 0 0 8px rgba(67, 203, 255, 0.6);
         }
 
@@ -39,9 +37,8 @@ body {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* --- BOTONES --- */
 .btn-accent {
-    background-color: #fff; /* Rosa neón (pega súper bien con el morado) */
+    background-color: #fff; 
     border-radius: 20px;
     padding: 8px 20px;
     border: none;
@@ -56,23 +53,20 @@ body {
         box-shadow: 0 4px 15px rgba(67, 203, 255, 0.6);
     }
 
-/* --- BANNER PRINCIPAL --- */
 .banner {
-    /* Le agregué una capa oscura encima para que el texto se lea mejor */
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.2)), url('/Img/Imagen_Fondo.png');
+    background: url('/Img/Imagen_Fondo.png');
     background-size: cover;
     background-position: center top;
-    height: 40vh; /* Lo reduje un poco para que se vean más los juegos de abajo */
+    height: 40vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* --- TARJETAS DE JUEGOS --- */
 .game-card {
     border-radius: 15px;
     overflow: hidden;
-    background-color: rgba(25, 25, 35, 0.7); /* Oscuro semi-transparente (Efecto cristal) */
+    background-color: rgba(25, 25, 35, 0.7);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
@@ -83,7 +77,7 @@ body {
     .game-card:hover {
         transform: translateY(-8px);
         box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.6);
-        border-color: #43CBFF; /* Se ilumina el borde en azul */
+        border-color: #43CBFF;
     }
 
 .game-img {
@@ -93,11 +87,10 @@ body {
 }
 
 .price {
-    color: #00e5ff; /* Color cyan neón para el dinero */
+    color: #00e5ff;
     font-weight: bold;
 }
 
-/* --- ETIQUETAS Y FAVORITOS --- */
 .badge-top {
     position: absolute;
     top: 0;
@@ -126,9 +119,8 @@ body {
         transform: scale(1.2);
     }
 
-/* --- TARJETAS DE MENÚ (Ver Categorías, Nuevos, etc.) --- */
 .feature-card {
-    background-color: rgba(20, 20, 30, 0.6); /* Transparencia para que combine con el fondo */
+    background-color: rgba(20, 20, 30, 0.6);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
@@ -154,7 +146,7 @@ body {
     .feature-card:hover {
         transform: translateY(-8px);
         background-color: rgba(255, 255, 255, 0.05);
-        border-color: #9708CC; /* Borde morado */
+        border-color: #43CBFF;
         box-shadow: 0 0 20px rgba(151, 8, 204, 0.4);
     }
 
@@ -162,7 +154,6 @@ body {
             color: #9708CC;
         }
 
-/* --- FOOTER --- */
 .footer-custom {
     background-color: rgba(10, 10, 15, 0.9);
     color: rgba(255, 255, 255, 0.5);
@@ -181,11 +172,14 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #43CBFF, #9708CC);
+    min-height: 100vh;*/
+/* Tu fondo intacto xd */
+    /*background: linear-gradient(to bottom, #43CBFF, #9708CC);*/
+    /*background: linear-gradient(to bottom, #43CBFF, #000);
     background-repeat: no-repeat;
     background-attachment: fixed;
-}
+    color: white;*/ /* Letra blanca por defecto para contrastar con el fondo oscuro */
+/*}
 
 
 .navbar-custom {

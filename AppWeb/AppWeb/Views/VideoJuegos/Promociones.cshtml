@@ -4,16 +4,16 @@
 }
 
 <div class="container mt-4">
-    <h2 class="text-success mb-4 text-center">Ofertas Especiales</h2>
+    <h2 class="text-white mb-4 text-center">Ofertas Especiales</h2>
 
     <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
         <a asp-controller="VideoJuegos" asp-action="Categoria" class="btn btn-outline-info rounded-pill px-4">
             <i class="fas fa-list"></i> Ver Categorías
         </a>
-        <a asp-controller="VideoJuegos" asp-action="NuevosJuego" class="btn btn-outline-warning rounded-pill px-4">
+        <a asp-controller="VideoJuegos" asp-action="NuevosJuego" class="btn btn-outline-info rounded-pill px-4">
             <i class="fas fa-star"></i> Nuevos Juegos
         </a>
-        <a asp-controller="VideoJuegos" asp-action="Promocion" class="btn btn-success rounded-pill px-4">
+        <a asp-controller="VideoJuegos" asp-action="Promocion" class="btn btn-outline-info rounded-pill px-4">
             <i class="fas fa-tags"></i> Promociones
         </a>
     </div>
@@ -21,22 +21,47 @@
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
         @foreach (var juego in Model)
         {
-            <div class="col">
-                <div class="card h-100 bg-secondary text-white border-0 shadow-sm position-relative">
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card game-card h-100">
 
+                    <!-- 🔴 BADGE SUPERIOR -->
                     <span class="position-absolute top-0 start-0 badge rounded-pill bg-danger m-2">
                         +@juego.Edad
                     </span>
 
-                    <span class="position-absolute top-0 end-0 badge rounded-pill bg-success m-2">
-                        ¡OFERTA!
-                    </span>
+                    @if (juego.Promocion)
+                    {
+                        <div class="badge-promo bg-success text-white px-2 py-1 rounded" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                            <i class="fas fa-tag"></i> ¡OFERTA!
+                        </div>
+                    }
 
-                    <img src="@juego.imagen" class="card-img-top" alt="@juego.Titulo" style="height: 220px; object-fit: cover;">
+                    <!-- ❤️ FAVORITO -->
+                    <div class="favorite">
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
 
-                    <div class="card-body text-center">
-                        <h6 class="card-title text-warning">@juego.Titulo</h6>
-                        <p class="card-text fw-bold text-white">@string.Format("{0:C}", juego.Precio)</p>
+                    <!-- IMAGEN -->
+                    <img src="@juego.imagen"
+                         class="card-img-top game-img" />
+
+                    <div class="card-body d-flex flex-column">
+
+                        <!-- TÍTULO -->
+                        <h5 class="card-title fw-bold">
+                            @juego.Titulo
+                        </h5>
+
+                        <!-- PRECIO -->
+                        <h4 class="price mt-2">
+                            $@juego.Precio
+                        </h4>
+
+                        <!-- CATEGORÍA -->
+                        <div class="d-flex align-items-center mt-auto">
+                            <i class="fa-solid fa-gamepad me-2 text-warning"></i>
+                            <span class="text-muted">@juego.Categoria</span>
+                        </div>
                     </div>
                 </div>
             </div>
