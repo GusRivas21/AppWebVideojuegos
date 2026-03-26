@@ -10,7 +10,7 @@
         <div class="col-md-3 mb-3">
             <div class="feature-card">
                 <i class="fas fa-gamepad"></i>
-                <h5>Categorías</h5>
+                <h5><a asp-controller="VideoJuegos" asp-action="Categoria">Ver Categorías</a></h5>
                 <p>Explora por tipo de juego</p>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="col-md-3 mb-3">
             <div class="feature-card">
                 <i class="fas fa-star"></i>
-                <h5>Nuevos Juegos</h5>
+                <h5><a asp-controller="VideoJuegos" asp-action="NuevosJuego">NuevosJuegos</a></h5>
                 <p>Lo último en la tienda</p>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="col-md-3 mb-3">
             <div class="feature-card">
                 <i class="fas fa-tags"></i>
-                <h5>Promociones</h5>
+                <h5><a asp-controller="VideoJuegos" asp-action="Promocion">Promociones</a></h5>
                 <p>Ofertas especiales</p>
             </div>
         </div>
@@ -53,7 +53,16 @@
                 <div class="card game-card h-100">
 
                     <!-- 🔴 BADGE SUPERIOR -->
-                    <div class="badge-top">+12</div>
+                    <span class="position-absolute top-0 start-0 badge rounded-pill bg-danger m-2">
+                        +@juego.Edad
+                    </span>
+
+                    @if (juego.Promocion)
+                    {
+                        <div class="badge-promo bg-success text-white px-2 py-1 rounded" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                            <i class="fas fa-tag"></i> ¡OFERTA!
+                        </div>
+                    }
 
                     <!-- ❤️ FAVORITO -->
                     <div class="favorite">
@@ -71,7 +80,6 @@
                             @juego.Titulo
                         </h5>
 
-
                         <!-- PRECIO -->
                         <h4 class="price mt-2">
                             $@juego.Precio
@@ -82,9 +90,9 @@
                             <i class="fa-solid fa-gamepad me-2 text-warning"></i>
                             <span class="text-muted">@juego.Categoria</span>
                         </div>
-
                     </div>
                 </div>
             </div>
         }
     </div>
+</div>

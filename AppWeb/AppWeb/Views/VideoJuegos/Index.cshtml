@@ -18,6 +18,7 @@
             <th>Imagen</th>
             <th>Precio</th>
             <th>Categoría</th>
+            <th>Edad</th>
             <th>Descripción</th>
             <th>Acciones</th>
         </tr>
@@ -39,6 +40,7 @@
                 </td>
                 <td>$@juego.Precio</td>
                 <td>@juego.Categoria</td>
+                <td>@juego.Edad</td>
                 <td>@juego.Descripcion</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@juego.Id" class="btn btn-sm btn-warning">Editar</a>

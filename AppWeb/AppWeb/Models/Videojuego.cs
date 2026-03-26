@@ -25,6 +25,12 @@ namespace AppWeb.Models
 
         public string? imagen { get; set; }
 
+        public int? Edad { get; set; }
+
+        public bool Promocion { get; set; }
+
+        public DateTime? FechaRegistro { get; set; }
+
         public ICollection<Compra>? Compras { get; set; }
     }
 }

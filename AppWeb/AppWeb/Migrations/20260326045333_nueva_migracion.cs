@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class nueva_migracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,8 @@ namespace AppWeb.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Correo = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Contrasena = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Contrasena = table.Column<byte[]>(type: "varbinary(255)", maxLength: 255, nullable: false),
+                    Salt = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -37,7 +38,10 @@ namespace AppWeb.Migrations
                     Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Categoria = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    imagen = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    imagen = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Edad = table.Column<int>(type: "int", nullable: true),
+                    Promocion = table.Column<bool>(type: "bit", nullable: true),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -1,17 +1,195 @@
+/*html, body {
+    height: 100%;
+}*/
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+    /* Tu fondo intacto xd */
+    /*background: linear-gradient(to bottom, #43CBFF, #9708CC);*/
+    background: linear-gradient(to bottom, #43CBFF, #000);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: white; /* Letra blanca por defecto para contrastar con el fondo oscuro */
+}
+
+/* --- NAVEGACIÓN --- */
+.navbar-custom {
+    background-color: rgba(15, 15, 20, 0.85); /* Oscuro con un poco de transparencia */
+    backdrop-filter: blur(10px); /* Desenfoque detrás del menú */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .navbar-custom .nav-link {
+        color: #e0e0e0;
+        font-size: 1.1rem;
+        transition: 0.3s ease;
+    }
+
+        .navbar-custom .nav-link:hover {
+            color: #43CBFF; /* Brillo celeste al pasar el mouse */
+            text-shadow: 0 0 8px rgba(67, 203, 255, 0.6);
+        }
+
+.navbar-brand {
+    font-size: 2rem;
+    color: #fff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* --- BOTONES --- */
+.btn-accent {
+    background-color: #fff; /* Rosa neón (pega súper bien con el morado) */
+    border-radius: 20px;
+    padding: 8px 20px;
+    border: none;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 0, 122, 0.4);
+}
+
+    .btn-accent:hover {
+        background-color: #43CBFF;
+        color: #000;
+        box-shadow: 0 4px 15px rgba(67, 203, 255, 0.6);
+    }
+
+/* --- BANNER PRINCIPAL --- */
+.banner {
+    /* Le agregué una capa oscura encima para que el texto se lea mejor */
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.2)), url('/Img/Imagen_Fondo.png');
+    background-size: cover;
+    background-position: center top;
+    height: 40vh; /* Lo reduje un poco para que se vean más los juegos de abajo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- TARJETAS DE JUEGOS --- */
+.game-card {
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: rgba(25, 25, 35, 0.7); /* Oscuro semi-transparente (Efecto cristal) */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+    .game-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.6);
+        border-color: #43CBFF; /* Se ilumina el borde en azul */
+    }
+
+.game-img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.price {
+    color: #00e5ff; /* Color cyan neón para el dinero */
+    font-weight: bold;
+}
+
+/* --- ETIQUETAS Y FAVORITOS --- */
+.badge-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #ff0044;
+    color: white;
+    padding: 6px 16px;
+    font-weight: bold;
+    border-bottom-right-radius: 15px;
+    z-index: 10;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+.favorite {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #ff0044;
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 10;
+}
+
+    .favorite:hover {
+        transform: scale(1.2);
+    }
+
+/* --- TARJETAS DE MENÚ (Ver Categorías, Nuevos, etc.) --- */
+.feature-card {
+    background-color: rgba(20, 20, 30, 0.6); /* Transparencia para que combine con el fondo */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+}
+
+    .feature-card a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .feature-card i {
+        font-size: 40px;
+        color: #43CBFF;
+        margin-bottom: 15px;
+        transition: 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: #9708CC; /* Borde morado */
+        box-shadow: 0 0 20px rgba(151, 8, 204, 0.4);
+    }
+
+        .feature-card:hover i {
+            color: #9708CC;
+        }
+
+/* --- FOOTER --- */
+.footer-custom {
+    background-color: rgba(10, 10, 15, 0.9);
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/*Primera version de css*/
+
 /*INICIO*/
-html, body {
+/*html, body {
     height: 100%;
 }
 
 body {
     display: flex;
     flex-direction: column;
-    background-color: #00687E;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #43CBFF, #9708CC);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 
 .navbar-custom {
-    background-color: #00416c;
+    background-color: #333;
 }
 
     .navbar-custom .nav-link {
@@ -130,6 +308,6 @@ body {
 
     .feature-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0px 0px 15px #d55829;
+        box-shadow: 0px 0px 15px #333;
         background-color: #00416c;
-    }
+    }*/

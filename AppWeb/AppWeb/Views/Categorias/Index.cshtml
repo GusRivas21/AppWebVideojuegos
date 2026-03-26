@@ -1,0 +1,59 @@
+﻿@model IEnumerable<AppWeb.Models.Videojuego>
+
+
+<div class="container mt-4">
+    <h2 class="text-warning mb-4 text-center">Explora todas nuestras categorias</h2>
+
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+        <a asp-controller="VideoJuegos" asp-action="Categoria" class="btn btn-outline-info rounded-pill px-4">
+            <i class="fas fa-list"></i> Ver Categorías
+        </a>
+        <a asp-controller="VideoJuegos" asp-action="NuevosJuego" class="btn btn-outline-info rounded-pill px-4">
+            Nuevos Juegos
+        </a>
+        <a asp-controller="VideoJuegos" asp-action="Promocion" class="btn btn-outline-success rounded-pill px-4">
+            <i class="fas fa-tags"></i> Promociones
+        </a>
+    </div>
+
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+        <a asp-controller="VideoJuegos" asp-action="Categoria" class="btn btn-outline-light rounded-pill px-4">Todas</a>
+
+        @if (ViewBag.TodasLasCategorias != null)
+        {
+            foreach (var nombreCat in ViewBag.TodasLasCategorias)
+            {
+                <a asp-controller="VideoJuegos" asp-action="Categoria" asp-route-Categoria="@nombreCat"
+                   class="btn btn-outline-warning rounded-pill px-4">
+                    @nombreCat
+                </a>
+            }
+        }
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var juego in Model)
+        {
+            <div class="col">
+                <div class="card h-100 bg-secondary text-white border-0 shadow-sm position-relative">
+
+                    <span class="position-absolute top-0 start-0 badge rounded-pill bg-danger m-2">
+                        +@juego.Edad
+                    </span>
+
+                    <img src="@juego.imagen" class="card-img-top" alt="@juego.Titulo" style="height: 220px; object-fit: cover;">
+
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-warning">@juego.Titulo</h6>
+                        <p class="card-text fw-bold text-white">@string.Format("{0:C}", juego.Precio)</p>
+
+                        @if (juego.Promocion == true)
+                        {
+                            <span class="badge bg-success">¡EN PROMO!</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

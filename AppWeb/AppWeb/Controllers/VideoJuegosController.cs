@@ -23,11 +23,12 @@ namespace AppWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HttpPost]
         public async Task<IActionResult> Create(Videojuego juego, IFormFile archivoImagen)
         {
             if (!ModelState.IsValid)
                 return View(juego);
+
+            juego.FechaRegistro = DateTime.Now;
 
             if (archivoImagen != null && archivoImagen.Length > 0)
             { 
@@ -77,6 +78,8 @@ namespace AppWeb.Controllers
                 juegoBD.imagen = juego.imagen;
                 juegoBD.Categoria = juego.Categoria;
                 juegoBD.Descripcion = juego.Descripcion;
+                juegoBD.Edad = juego.Edad;
+                juegoBD.Promocion = juego.Promocion;
 
                 if (archivoImagen != null && archivoImagen.Length > 0)
                 {
@@ -136,6 +139,37 @@ namespace AppWeb.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> NuevosJuego()
+        {
+            var juegos = await _context.Videojuegos
+                .OrderByDescending(v => v.FechaRegistro)
+                .Take(15)
+                .ToListAsync();
+            return View("~/Views/VideoJuegos/NuevosJuegos.cshtml", juegos);
+        }
+
+        public async Task<IActionResult> Promocion()
+        {
+            var juegos = await _context.Videojuegos
+                .Where(v => v.Promocion == true)
+                .ToListAsync();
+            return View("~/Views/VideoJuegos/Promociones.cshtml", juegos);
+        }
+
+        public async Task<IActionResult> Categoria(string Categoria)
+        {
+            ViewBag.TodasLasCategorias = await _context.Videojuegos
+                .Select(v => v.Categoria)
+                .Distinct()
+                .ToListAsync();
+
+            var juegos = string.IsNullOrEmpty(Categoria)
+                ? await _context.Videojuegos.ToListAsync()
+                : await _context.Videojuegos.Where(v => v.Categoria == Categoria).ToListAsync();
+
+            return View("~/Views/Categorias/Index.cshtml", juegos);
         }
     }
 }

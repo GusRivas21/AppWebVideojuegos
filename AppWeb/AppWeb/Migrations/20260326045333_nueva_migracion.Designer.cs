@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260312171855_Inicial")]
-    partial class Inicial
+    [Migration("20260326045333_nueva_migracion")]
+    partial class nueva_migracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,10 +59,10 @@ namespace AppWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Contrasena")
+                    b.Property<byte[]>("Contrasena")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varbinary(255)");
 
                     b.Property<string>("Correo")
                         .IsRequired()
@@ -75,6 +75,11 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -102,8 +107,17 @@ namespace AppWeb.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("Edad")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<bool?>("Promocion")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
@@ -121,7 +135,7 @@ namespace AppWeb.Migrations
             modelBuilder.Entity("AppWeb.Models.Compra", b =>
                 {
                     b.HasOne("AppWeb.Models.Usuario", "Usuarios")
-                        .WithMany("Compras")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -135,11 +149,6 @@ namespace AppWeb.Migrations
                     b.Navigation("Usuarios");
 
                     b.Navigation("Videojuegos");
-                });
-
-            modelBuilder.Entity("AppWeb.Models.Usuario", b =>
-                {
-                    b.Navigation("Compras");
                 });
 
             modelBuilder.Entity("AppWeb.Models.Videojuego", b =>
