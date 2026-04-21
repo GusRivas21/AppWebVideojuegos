@@ -1,6 +1,6 @@
-﻿using AppWeb.Data;
+﻿using AppWeb.Coll;
+using AppWeb.Data;
 using AppWeb.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,44 +17,45 @@ namespace AppWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [SessionAuthorize]
+        public IActionResult Dashboard()
         {
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Login(Login model) // login o index, weno tengo que revisar
         {
-            //var user = _context.Usuarios
-            //    .FirstOrDefault(u => u.Correo == model.correo && u.Contrasena == model.Contrasena);
-
-            //if(user != null)
-            //{
-            //    HttpContext.Session.SetString("usuario", user.Nombre);
-            //    Console.WriteLine("usuario " + user.Nombre);
-            //    return RedirectToAction("Index", "Home");
-            //}
-
-            //ViewBag.Error = "Credenciales Incorrectas";
-            //return View();
-
             var user = _context.Usuarios
                 .FirstOrDefault(u => u.Correo == model.correo);
 
-
-            if (user == null)
+            if (user != null)
             { 
-                string saltedPassword = user.Salt + model.Contrasena;
+                string saltedPassword = user.salt + model.Contrasena;
 
                 using (SHA256 sha256 = SHA256.Create())
                 {
-                    byte[] inputBytes = Encoding.UTF8.GetBytes(saltedPassword);
+                    //byte[] inputBytes = Encoding.UTF8.GetBytes(saltedPassword);
+                    byte[] inputBytes = Encoding.Unicode.GetBytes(saltedPassword);
                     byte[] hashBytes = sha256.ComputeHash(inputBytes);
+
+                    //Console.WriteLine("Salt BD" + user.salt);
+                    //Console.WriteLine("Password input" + model.Contrasena);
+                    //Console.WriteLine("Salted: " + (user.salt + model.Contrasena));
+
+                    //Console.WriteLine("Hash generado: " + Convert.ToBase64String(hashBytes));
+                    //Console.WriteLine("Hash BD: " + Convert.ToBase64String(user.Contrasena));
 
                     if (hashBytes.SequenceEqual(user.Contrasena))
                     { 
                         HttpContext.Session.SetString("usuario", user.Nombre);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Dashboard", "Account");
                     }
                 }
             }

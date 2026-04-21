@@ -1,4 +1,5 @@
-﻿using AppWeb.Data;
+﻿using AppWeb.Coll;
+using AppWeb.Data;
 using AppWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace AppWeb.Controllers
 {
+    [SessionAuthorize]
     public class VideoJuegosController(AppDbContext context) : Controller
     {
         private readonly AppDbContext _context = context;

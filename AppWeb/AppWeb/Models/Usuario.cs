@@ -20,7 +20,7 @@ namespace AppWeb.Models
         public byte[] Contrasena { get; set; }
 
         [StringLength(255)]
-        public string Salt { get; set; }
+        public string salt { get; set; }
 
         [Required]
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
