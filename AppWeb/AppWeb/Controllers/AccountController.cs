@@ -25,20 +25,31 @@ namespace AppWeb.Controllers
         [SessionAuthorize]
         public IActionResult Dashboard()
         {
-            var data = (from v in _context.Videojuegos
+            ViewBag.ListaCategorias = _context.Categorias.ToList();
+            return View();
+        }
+
+        public IActionResult ObtenerDatos(string categoria)
+        {
+            var query = from v in _context.Videojuegos
                         join c in _context.Categorias
                         on v.idcategoria equals c.idcategoria
-                        group v by c.categoria into g
-                        select new 
-                        {
-                            Categoria = g.Key,
-                            Total = g.Count()
-                        }).ToList();
+                        select new {c.categoria};
 
-            ViewBag.Categorias = data.Select(x => x.Categoria).ToList();
-            ViewBag.Totales = data.Select(x => x.Total).ToList();
+            if(!string.IsNullOrEmpty(categoria))
+            {
+                query = query.Where(x => x.categoria == categoria);
+            }
 
-            return View();
+            var data = query
+                .GroupBy(x => x.categoria)
+                .Select(g => new
+                {
+                    categoria = g.Key,
+                    total = g.Count()
+                }).ToList();
+
+            return Json(data);
         }
 
         [HttpPost]
