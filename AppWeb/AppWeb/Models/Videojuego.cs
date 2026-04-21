@@ -17,8 +17,10 @@ namespace AppWeb.Models
         public decimal Precio { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Categoria { get; set; }
+        public int? idcategoria { get; set; }
+
+        [ForeignKey("idcategoria")]
+        public virtual Categoria? Categoria { get; set; }
 
         [StringLength(500)]
         public string Descripcion { get; set; }
@@ -31,6 +33,6 @@ namespace AppWeb.Models
 
         public DateTime? FechaRegistro { get; set; }
 
-        public ICollection<Compra>? Compras { get; set; }
+        //public ICollection<Compra>? Compras { get; set; }
     }
 }

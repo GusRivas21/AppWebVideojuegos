@@ -13,10 +13,12 @@
         <input asp-for="Precio" class="form-control" />
         <span asp-validation-for="Precio"></span>
     </div>
-    <div>
-        <label>Categoria</label>
-        <input asp-for="Categoria" class="form-control" />
-        <span asp-validation-for="Categoria"></span>
+    <div class="form-group">
+        <label asp-for="idcategoria" class="control-label">Categoría</label>
+        <select asp-for="idcategoria" class="form-control" asp-items="ViewBag.idcategoria">
+            <option value="">-- Seleccione una Categoría --</option>
+        </select>
+        <span asp-validation-for="idcategoria" class="text-danger"></span>
     </div>
 
     <div class="mt-3">

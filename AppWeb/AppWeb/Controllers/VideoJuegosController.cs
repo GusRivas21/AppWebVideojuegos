@@ -3,6 +3,7 @@ using AppWeb.Data;
 using AppWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection.Metadata.Ecma335;
 
 namespace AppWeb.Controllers
@@ -14,12 +15,13 @@ namespace AppWeb.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var juegos = await _context.Videojuegos.ToListAsync();
+            var juegos = await _context.Videojuegos.Include(v => v.Categoria).ToListAsync();
             return View(juegos);
         }
 
         public IActionResult Create()
         {
+            ViewBag.idcategoria = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categorias, "idcategoria", "categoria");
             return View();
         }
 
@@ -27,8 +29,11 @@ namespace AppWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Videojuego juego, IFormFile archivoImagen)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) 
+            {
+                ViewBag.idcategoria = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categorias, "idcategoria", "categoria", juego.idcategoria);
                 return View(juego);
+            }
 
             juego.FechaRegistro = DateTime.Now;
 
@@ -59,8 +64,9 @@ namespace AppWeb.Controllers
             
             var juego = await _context.Videojuegos.FindAsync(id);
             if (juego == null) return NotFound();
-            return View(juego);
 
+            ViewBag.idcategoria = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categorias, "idcategoria", "categoria", juego.idcategoria);
+            return View(juego);
         }
 
         [HttpPost]
@@ -78,7 +84,7 @@ namespace AppWeb.Controllers
                 juegoBD.Titulo = juego.Titulo;
                 juegoBD.Precio = juego.Precio;
                 juegoBD.imagen = juego.imagen;
-                juegoBD.Categoria = juego.Categoria;
+                juegoBD.idcategoria = juego.idcategoria;
                 juegoBD.Descripcion = juego.Descripcion;
                 juegoBD.Edad = juego.Edad;
                 juegoBD.Promocion = juego.Promocion;
@@ -115,6 +121,7 @@ namespace AppWeb.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.idcategoria = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categorias, "idcategoria", "categoria", juego.idcategoria);
             return View(juegoBD);
         }
 
@@ -160,16 +167,18 @@ namespace AppWeb.Controllers
             return View("~/Views/VideoJuegos/Promociones.cshtml", juegos);
         }
 
-        public async Task<IActionResult> Categoria(string Categoria)
+        public async Task<IActionResult> Categoria(int? Categoria)
         {
-            ViewBag.TodasLasCategorias = await _context.Videojuegos
-                .Select(v => v.Categoria)
-                .Distinct()
-                .ToListAsync();
+            ViewBag.TodasLasCategorias = await _context.Categorias.ToListAsync();
 
-            var juegos = string.IsNullOrEmpty(Categoria)
+            //ViewBag.TodasLasCategorias = await _context.Videojuegos
+            //.Select(v => v.idcategoria)
+            //.Distinct()
+            //.ToListAsync();
+
+            var juegos = (Categoria == null || Categoria == 0)
                 ? await _context.Videojuegos.ToListAsync()
-                : await _context.Videojuegos.Where(v => v.Categoria == Categoria).ToListAsync();
+                : await _context.Videojuegos.Where(v => v.idcategoria == Categoria).ToListAsync();
 
             return View("~/Views/Categorias/Index.cshtml", juegos);
         }
