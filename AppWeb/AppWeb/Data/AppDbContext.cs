@@ -12,6 +12,7 @@ namespace AppWeb.Data
         public DbSet<Videojuego> Videojuegos { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<DetalleCompra> Detalle_Compra { get; set; }
 
     }
 }

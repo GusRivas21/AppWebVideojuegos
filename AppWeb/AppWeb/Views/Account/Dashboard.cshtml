@@ -75,6 +75,16 @@
                 👤 @usuario
             </span>
 
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="btn btn-light btn-sm btn-logout" asp-controller="Home" asp-action="Index">Inicio</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-light btn-sm btn-logout" asp-controller="Account" asp-action="DetalleVentas">Detalle Ventas</a>
+                </li>
+            </ul>
+
             <a asp-controller="Account" asp-action="Logout" class="btn btn-light btn-sm btn-logout">
                 Cerrar Sesión
             </a>

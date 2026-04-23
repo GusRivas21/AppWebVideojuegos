@@ -2,6 +2,7 @@
 using AppWeb.Data;
 using AppWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -50,6 +51,51 @@ namespace AppWeb.Controllers
                 }).ToList();
 
             return Json(data);
+        }
+
+        [SessionAuthorize]
+        public async Task<IActionResult> DetalleVentas(DateTime? desde, DateTime? hasta, int pagina=1)
+        {
+            int paginador = 12;
+
+            var query = _context.Detalle_Compra
+                .Include(d => d.Compra)
+                .Include(d => d.VideoJuegos)
+                .AsQueryable();
+
+            if (desde.HasValue)
+            {
+                query = query.Where(d => d.FechaHoraTransaccion >= desde.Value);
+            }
+            if (hasta.HasValue)
+            {
+                query = query.Where(d => d.FechaHoraTransaccion <= hasta.Value);
+            }
+
+            var total_registros = await query.CountAsync();
+            var data = await query
+                .OrderByDescending(d => d.FechaHoraTransaccion)
+                .Skip((pagina - 1) * paginador)
+                .Take(paginador)
+                .Select(d => new VentaViewModel
+                {
+                    Id = d.Id,
+                    FechaCompra = d.FechaHoraTransaccion,
+                    VideoJuegosId = d.VideoJuegosId,
+                    Titulo = d.VideoJuegos.Titulo,
+                    Cantidad = d.Cantidad,
+                    Total = d.Total,
+                    EstadoCompra = d.EstadoCompra,
+                    FechaHoraTransaccion = d.FechaHoraTransaccion,
+                    CodigoTransaccion = d.CodigoTransaccion
+                }).ToListAsync();
+
+            ViewBag.TotalPaginas = (int)Math.Ceiling((double)total_registros / paginador);
+            ViewBag.PaginaActual = pagina;
+            ViewBag.Desde = desde;
+            ViewBag.Hasta = hasta;
+    
+            return View(data);
         }
 
         [HttpPost]
