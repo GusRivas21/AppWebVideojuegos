@@ -1,0 +1,84 @@
+@model List<VentaViewModel>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Mis Compras</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 30px; color: #333; }
+        .header { border-bottom: 2px solid #28a745; padding-bottom: 10px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .title-container { text-align: right; flex-grow: 1; }
+        .title { font-size: 28px; font-weight: bold; color: #28a745; text-transform: uppercase; }
+        .subtitle { font-size: 14px; color: #666; margin-top: 5px; }
+        .user-info { font-size: 16px; margin-bottom: 15px; border-left: 4px solid #28a745; padding-left: 10px; }
+        .filters { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 25px; font-size: 13px; }
+        .filters span { font-weight: bold; color: #28a745; margin-right: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; box-shadow: 0 2px 3px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #dee2e6; padding: 12px 10px; text-align: left; font-size: 11px; }
+        th { background-color: #28a745; color: white; text-transform: uppercase; letter-spacing: 1px; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .price { text-align: right; font-weight: bold; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .status-completado { background-color: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title-container">
+            <div class="title">Historial de Compras</div>
+            <div class="subtitle">Generado el @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+    </div>
+
+    <div class="user-info">
+        Cliente: <strong>@ViewBag.Usuario</strong>
+    </div>
+
+    <div class="filters">
+        <span>Filtros aplicados:</span>
+        @{
+            var desde = ViewBag.Desde as DateTime?;
+            var hasta = ViewBag.Hasta as DateTime?;
+            var videojuego = ViewBag.Videojuego as string;
+            bool hasFilters = desde.HasValue || hasta.HasValue || !string.IsNullOrEmpty(videojuego);
+        }
+        @if (desde.HasValue) { <span>Desde: @desde.Value.ToString("dd/MM/yyyy") </span> }
+        @if (hasta.HasValue) { <span>Hasta: @hasta.Value.ToString("dd/MM/yyyy")</span> }
+        @if (!string.IsNullOrEmpty(videojuego)) { <span>Videojuego: @videojuego</span> }        
+        @if (!hasFilters) { <span>Todo mi historial</span> }
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Videojuego</th>
+                <th style="text-align: center">Cant.</th>
+                <th class="price">Total</th>
+                <th>Estado</th>
+                <th>Fecha de Compra</th>
+                <th>Código Transacción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var venta in Model)
+            {
+                <tr>
+                    <td style="font-weight: bold;">@venta.Titulo</td>
+                    <td style="text-align: center">@venta.Cantidad</td>
+                    <td class="price">$@venta.Total.ToString("N2")</td>
+                    <td>
+                        <span class="status-badge status-completado">
+                            @venta.EstadoCompra
+                        </span>
+                    </td>
+                    <td>@venta.FechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td style="font-family: monospace; color: #555;">@venta.CodigoTransaccion</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

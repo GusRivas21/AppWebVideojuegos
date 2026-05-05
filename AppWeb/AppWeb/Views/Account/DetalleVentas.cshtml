@@ -28,10 +28,18 @@
                 <label class="form-label small fw-bold text-info">VIDEOJUEGO</label>
                 <input type="text" name="videojuego" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Videojuego" placeholder="Título del juego..." />
             </div>
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col-md-2 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-accent w-100 fw-bold">
                     <i class="fas fa-search me-2"></i>BUSCAR
                 </button>
+                <a asp-action="ExportarPDF" 
+                   asp-route-desde="@ViewBag.Desde?.ToString("yyyy-MM-dd")" 
+                   asp-route-hasta="@ViewBag.Hasta?.ToString("yyyy-MM-dd")" 
+                   asp-route-cliente="@ViewBag.Cliente" 
+                   asp-route-videojuego="@ViewBag.Videojuego" 
+                   target="_blank" class="btn btn-danger fw-bold">
+                    <i class="fas fa-file-pdf"></i>
+                </a>
             </div>
         </form>
     </div>
@@ -75,7 +83,7 @@
     <div class="mt-4 d-flex justify-content-center">
         <nav>
             <ul class="pagination pagination-sm">
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
                 {
                     <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
                         <a class="page-link @(i == ViewBag.PaginaActual ? "bg-info border-info" : "bg-dark text-muted border-secondary")" 

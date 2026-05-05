@@ -32,10 +32,17 @@
                 <label class="form-label small fw-bold text-info">BUSCAR JUEGO</label>
                 <input type="text" name="videojuego" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Videojuego" placeholder="Ej: Halo, Elden Ring..." />
             </div>
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col-md-2 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-accent w-100 fw-bold">
                     <i class="fas fa-filter me-2"></i>FILTRAR
                 </button>
+                <a asp-action="ExportarMisComprasPDF" 
+                   asp-route-desde="@ViewBag.Desde?.ToString("yyyy-MM-dd")" 
+                   asp-route-hasta="@ViewBag.Hasta?.ToString("yyyy-MM-dd")" 
+                   asp-route-videojuego="@ViewBag.Videojuego" 
+                   target="_blank" class="btn btn-danger fw-bold">
+                    <i class="fas fa-file-pdf"></i>
+                </a>
             </div>
         </form>
     </div>

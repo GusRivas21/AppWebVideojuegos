@@ -227,6 +227,25 @@ h2, h3, h4 {
     font-weight: bold;
 }
 
+.btn-steam-warning:hover {
+    background: #f1c40f;
+    color: #000;
+    transform: translateY(-1px);
+}
+
+.btn-steam-danger {
+    background: #a92020;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-steam-danger:hover {
+    background: #c0392b;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
 /* Custom Scrollbar - Steam Style */
 ::-webkit-scrollbar {
     width: 12px;

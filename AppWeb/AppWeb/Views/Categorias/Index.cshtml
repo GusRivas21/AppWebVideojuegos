@@ -1,99 +1,43 @@
-﻿@model IEnumerable<AppWeb.Models.Videojuego>
+@model IEnumerable<AppWeb.Models.Categoria>
+
 @{
-    ViewData["Title"] = "Explorar Categorías";
+    ViewData["Title"] = "Categorías";
 }
 
-<div class="container py-4">
-    <div class="text-center mb-5 animate__animated animate__fadeInDown">
-        <h2 class="fw-bold text-white mb-2">EXPLORAR LA BIBLIOTECA</h2>
-        <p class="text-muted">Encuentra tu próxima aventura por género o categoría</p>
-    </div>
-
-    <!-- BOTONES DE ACCIÓN RÁPIDA -->
-    <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
-        <a asp-controller="VideoJuegos" asp-action="NuevosJuego" class="btn btn-outline-info rounded-pill px-4 fw-bold small">
-            <i class="fas fa-star me-2"></i>NOVEDADES
-        </a>
-        <a asp-controller="VideoJuegos" asp-action="Promocion" class="btn btn-outline-success rounded-pill px-4 fw-bold small">
-            <i class="fas fa-tags me-2"></i>OFERTAS
-        </a>
-    </div>
-
-    <!-- FILTROS DE CATEGORÍA -->
-    <div class="glass-panel mb-5 p-3">
-        <div class="d-flex justify-content-center flex-wrap gap-2">
-            <a asp-controller="VideoJuegos" asp-action="Categoria" 
-               class="btn btn-sm rounded-pill px-4 @(ViewBag.CategoriaSeleccionada == null || ViewBag.CategoriaSeleccionada == 0 ? "active-steam" : "btn-steam-medium")">
-                TODAS
-            </a>
-
-            @if (ViewBag.TodasLasCategorias != null)
-            {
-                foreach (var cat in ViewBag.TodasLasCategorias)
-                {
-                    <a asp-controller="VideoJuegos" asp-action="Categoria" asp-route-Categoria="@cat.idcategoria"
-                       class="btn btn-sm rounded-pill px-4 @(ViewBag.CategoriaSeleccionada == cat.idcategoria ? "active-steam" : "btn-outline-info")">
-                        @cat.categoria.ToUpper()
-                    </a>
-                }
-            }
-        </div>
-    </div>
-
+<div class="glass-panel mt-4 animate-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0 text-white text-uppercase">
-            @(ViewBag.NombreCategoriaSeleccionada ?? "TODOS LOS TÍTULOS")
-        </h4>
-        <hr class="flex-grow-1 ms-4 opacity-25" />
+        <h2 class="mb-0"><i class="fas fa-tags me-2 text-info"></i>GESTIÓN DE CATEGORÍAS</h2>
+        <a asp-action="Create" class="btn btn-accent fw-bold">
+            <i class="fas fa-plus me-2"></i>NUEVA CATEGORÍA
+        </a>
     </div>
 
-    <div class="row g-4">
-        @foreach (var juego in Model)
-        {
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="game-card shadow">
-                    <div class="position-relative">
-                        <img src="@juego.imagen" class="game-img" alt="@juego.Titulo" />
-                        
-                        @if (juego.Promocion)
-                        {
-                            <span class="badge-promo position-absolute bottom-0 start-0 m-2">
-                                -% OFF
-                            </span>
-                        }
-                        
-                        <span class="badge-top position-absolute top-0 end-0 m-2">
-                            +@juego.Edad
-                        </span>
-                    </div>
-
-                    <div class="card-body">
-                        <h5 class="card-title" title="@juego.Titulo">@juego.Titulo</h5>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <span class="price">$@juego.Precio</span>
-                            <form asp-controller="Cliente" asp-action="Comprar" method="post">
-                                <input type="hidden" name="videojuegoId" value="@juego.Id" />
-                                <button type="submit" class="btn btn-steam-green btn-sm">
-                                    <i class="fas fa-cart-plus"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="table-responsive">
+        <table class="table table-steam">
+            <thead>
+                <tr>
+                    <th>NOMBRE DE LA CATEGORÍA</th>
+                    <th class="text-center" style="width: 200px;">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-white">@item.categoria.ToUpper()</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Edit" asp-route-id="@item.idcategoria" class="btn btn-steam-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.idcategoria" class="btn btn-steam-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
-
-<style>
-    .btn-steam-medium {
-        background: var(--steam-blue-medium);
-        color: white;
-        border: none;
-    }
-    .active-steam {
-        background: var(--steam-blue-light);
-        color: var(--steam-dark);
-        font-weight: bold;
-    }
-</style>

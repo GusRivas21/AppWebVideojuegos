@@ -179,10 +179,10 @@ namespace AppWeb.Controllers
             }
 
             var juegos = (Categoria == null || Categoria == 0)
-                ? await _context.Videojuegos.ToListAsync()
-                : await _context.Videojuegos.Where(v => v.idcategoria == Categoria).ToListAsync();
+                ? await _context.Videojuegos.Include(v => v.Categoria).ToListAsync()
+                : await _context.Videojuegos.Where(v => v.idcategoria == Categoria).Include(v => v.Categoria).ToListAsync();
 
-            return View("~/Views/Categorias/Index.cshtml", juegos);
+            return View("~/Views/VideoJuegos/PorCategoria.cshtml", juegos);
         }
     }
 }

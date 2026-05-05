@@ -1,0 +1,53 @@
+@model IEnumerable<AppWeb.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="glass-panel mt-4 animate-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><i class="fas fa-users me-2 text-info"></i>GESTIÓN DE USUARIOS</h2>
+        <a asp-action="Create" class="btn btn-accent fw-bold">
+            <i class="fas fa-user-plus me-2"></i>NUEVO USUARIO
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-steam">
+            <thead>
+                <tr>
+                    <th>NOMBRE</th>
+                    <th>CORREO</th>
+                    <th>ROL</th>
+                    <th>FECHA REGISTRO</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-white">@item.Nombre</td>
+                        <td>@item.Correo</td>
+                        <td>
+                            <span class="badge @(item.IdRol == 1 ? "bg-primary" : "bg-info") text-dark">
+                                @item.Roles.Rol
+                            </span>
+                        </td>
+                        <td class="text-muted small">@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-steam-warning">
+                                    <i class="fas fa-user-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-steam-danger">
+                                    <i class="fas fa-user-slash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

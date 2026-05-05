@@ -3,6 +3,7 @@ using AppWeb.Data;
 using AppWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -165,7 +166,7 @@ namespace AppWeb.Controllers
             }
             if (hasta.HasValue)
             {
-                query = query.Where(d => d.FechaHoraTransaccion <= hasta.Value);
+                query = query.Where(d => d.FechaHoraTransaccion < hasta.Value.Date.AddDays(1));
             }
             if (!string.IsNullOrEmpty(videojuego))
             {
@@ -186,6 +187,61 @@ namespace AppWeb.Controllers
             ViewBag.Videojuego = videojuego;
 
             return View(data);
+        }
+
+        public async Task<IActionResult> ExportarMisComprasPDF(DateTime? desde, DateTime? hasta, string videojuego)
+        {
+            var usuario = HttpContext.Session.GetString("usuario");
+            var dbUser = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nombre == usuario);
+
+            if (dbUser == null) return RedirectToAction("Login", "Account");
+
+            var query = _context.Detalle_Compra
+                .Include(d => d.Compra)
+                .Include(d => d.VideoJuegos)
+                .Where(d => d.Compra.UsuarioId == dbUser.Id)
+                .AsQueryable();
+
+            if (desde.HasValue)
+            {
+                query = query.Where(d => d.FechaHoraTransaccion >= desde.Value);
+            }
+            if (hasta.HasValue)
+            {
+                query = query.Where(d => d.FechaHoraTransaccion < hasta.Value.Date.AddDays(1));
+            }
+            if (!string.IsNullOrEmpty(videojuego))
+            {
+                query = query.Where(d => d.VideoJuegos.Titulo.Contains(videojuego));
+            }
+
+            var data = await query
+                .OrderByDescending(d => d.FechaHoraTransaccion)
+                .Select(d => new VentaViewModel
+                {
+                    Id = d.Id,
+                    FechaCompra = d.FechaHoraTransaccion,
+                    VideoJuegosId = d.VideoJuegosId,
+                    Titulo = d.VideoJuegos.Titulo,
+                    UsuarioId = d.Compra.UsuarioId,
+                    NombreUsuario = d.Compra.Usuarios.Nombre,
+                    Cantidad = d.Cantidad,
+                    Total = d.Total,
+                    EstadoCompra = d.EstadoCompra,
+                    FechaHoraTransaccion = d.FechaHoraTransaccion,
+                    CodigoTransaccion = d.CodigoTransaccion
+                }).ToListAsync();
+
+            ViewBag.Desde = desde;
+            ViewBag.Hasta = hasta;
+            ViewBag.Videojuego = videojuego;
+            ViewBag.Usuario = dbUser.Nombre;
+
+            return new ViewAsPdf("PdfMisCompras", data)
+            {
+                FileName = "MisCompras.pdf",
+                CustomSwitches = "--footer-center \"Página [page] de [topage]\" --footer-font-size 10"
+            };
         }
 
         // Mi Cuenta

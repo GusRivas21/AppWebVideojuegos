@@ -1,0 +1,40 @@
+@model AppWeb.Models.Usuario
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="glass-panel animate-in">
+                <div class="mb-4">
+                    <i class="fas fa-user-times text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="mb-3 text-white">¿ELIMINAR USUARIO?</h2>
+                <p class="text-muted mb-4">
+                    Estás a punto de eliminar al usuario <strong class="text-info">"@Model.Nombre"</strong>. 
+                    El acceso de esta persona al sistema será revocado permanentemente.
+                </p>
+                
+                <div class="text-start bg-dark p-3 rounded mb-4 border border-secondary">
+                    <div class="small text-info fw-bold">DETALLES:</div>
+                    <div class="text-white">Correo: @Model.Correo</div>
+                    <div class="text-white">Rol: @Model.Roles.Rol</div>
+                </div>
+                
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-steam-danger w-100 fw-bold py-2">
+                            <i class="fas fa-trash me-2"></i>CONFIRMAR ELIMINACIÓN
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100 fw-bold py-2">
+                            CANCELAR
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

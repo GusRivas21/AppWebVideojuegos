@@ -1,5 +1,6 @@
 using AppWeb.Data;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,12 +25,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
+RotativaConfiguration.Setup(@"C:\Program Files\wkhtmltopdf\bin", "");
 
 app.UseSession();
 app.MapControllerRoute(

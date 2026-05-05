@@ -1,0 +1,39 @@
+@model AppWeb.Models.Categoria
+
+@{
+    ViewData["Title"] = "Crear Categoría";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="glass-panel animate-in">
+                <h2 class="mb-4 text-center text-info"><i class="fas fa-plus-circle me-2"></i>NUEVA CATEGORÍA</h2>
+                <hr class="border-secondary opacity-25 mb-4" />
+                
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="categoria" class="form-label small fw-bold text-info">NOMBRE DE LA CATEGORÍA</label>
+                        <input asp-for="categoria" class="form-control bg-dark border-secondary text-white py-2" placeholder="Ej: Acción, Aventura..." />
+                        <span asp-validation-for="categoria" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-accent w-100 fw-bold py-2">
+                            <i class="fas fa-save me-2"></i>GUARDAR
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100 fw-bold py-2">
+                            CANCELAR
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
