@@ -12,10 +12,12 @@ namespace AppWeb.Controllers
     public class ClienteController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly PayPalClient _payPalClient;
 
-        public ClienteController(AppDbContext context)
+        public ClienteController(AppDbContext context, PayPalClient payPalClient)
         {
             _context = context;
+            _payPalClient = payPalClient;
         }
 
         // Vista principal (Juegos disponibles 10 en 10)
@@ -48,6 +50,58 @@ namespace AppWeb.Controllers
             if (juego == null) return RedirectToAction("Index");
 
             return View(juego);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CrearOrdenPayPal([FromBody] PayPalOrderRequest request)
+        {
+            var videojuego = await _context.Videojuegos.FindAsync(request.VideojuegoId);
+            if (videojuego == null) return BadRequest();
+
+            var total = videojuego.Precio * request.Cantidad;
+            var orderId = await _payPalClient.CrearOrden(total);
+
+            return Ok(new { id = orderId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FinalizarCompraPayPal([FromBody] PayPalCaptureRequest request)
+        {
+            var success = await _payPalClient.CapturarOrden(request.OrderId);
+            if (success)
+            {
+                var usuario = HttpContext.Session.GetString("usuario");
+                var dbUser = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nombre == usuario);
+                var videojuego = await _context.Videojuegos.FindAsync(request.VideojuegoId);
+
+                if (dbUser != null && videojuego != null)
+                {
+                    var compra = new Compra
+                    {
+                        FechaCompra = DateTime.Now,
+                        UsuarioId = dbUser.Id
+                    };
+                    _context.Compras.Add(compra);
+                    await _context.SaveChangesAsync();
+
+                    var detalle = new DetalleCompra
+                    {
+                        VideoJuegosId = request.VideojuegoId,
+                        Cantidad = request.Cantidad,
+                        Total = videojuego.Precio * request.Cantidad,
+                        EstadoCompra = "Completado",
+                        FechaHoraTransaccion = DateTime.Now,
+                        CodigoTransaccion = request.OrderId,
+                        IdCompra = compra.Id
+                    };
+                    _context.Detalle_Compra.Add(detalle);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] = $"Has adquirido {request.Cantidad} unidad(es) de '{videojuego.Titulo}' con éxito vía PayPal.";
+                    return Ok();
+                }
+            }
+            return BadRequest();
         }
 
         // Comprar juego - Proceso

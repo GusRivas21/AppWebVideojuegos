@@ -11,6 +11,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         )
    );
 
+builder.Services.AddHttpClient<AppWeb.Coll.PayPalClient>();
 builder.Services.AddSession();
 var app = builder.Build();
 
