@@ -68,8 +68,8 @@ namespace AppWeb.Controllers
                 _context.Usuarios.Add(nuevoUsuario);
                 await _context.SaveChangesAsync();
 
-                ViewBag.Success = "Registro exitoso. Ahora puedes iniciar sesión.";
-                return View(new RegistroViewModel());
+                TempData["SuccessMessage"] = "¡Registro exitoso! Ya puedes iniciar sesión.";
+                return RedirectToAction("Login");
             }
 
             return View(model);
@@ -287,34 +287,38 @@ namespace AppWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(Login model) // login o index, weno tengo que revisar
         {
-            var user = _context.Usuarios
-                .FirstOrDefault(u => u.Correo == model.correo);
+            if (ModelState.IsValid)
+            {
+                var user = _context.Usuarios
+                    .FirstOrDefault(u => u.Correo == model.correo);
 
-            if (user != null && user.salt != null && user.Contrasena != null)
-            { 
-                string saltedPassword = user.salt + model.Contrasena;
-
-                using (SHA256 sha256 = SHA256.Create())
+                if (user != null && user.salt != null && user.Contrasena != null)
                 {
-                    byte[] inputBytes = Encoding.Unicode.GetBytes(saltedPassword);
-                    byte[] hashBytes = sha256.ComputeHash(inputBytes);
+                    string saltedPassword = user.salt + model.Contrasena;
 
-                    if (hashBytes.SequenceEqual(user.Contrasena))
-                    { 
-                        HttpContext.Session.SetString("usuario", user.Nombre);
-                        HttpContext.Session.SetInt32("IdRol", user.IdRol);
-                        if (user.IdRol == 1)
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        byte[] inputBytes = Encoding.Unicode.GetBytes(saltedPassword);
+                        byte[] hashBytes = sha256.ComputeHash(inputBytes);
+
+                        if (hashBytes.SequenceEqual(user.Contrasena))
                         {
-                             return RedirectToAction("Dashboard", "Account");
-                        }else if (user.IdRol == 2)
-                        {
-                             return RedirectToAction("Index", "Cliente");
+                            HttpContext.Session.SetString("usuario", user.Nombre);
+                            HttpContext.Session.SetInt32("IdRol", user.IdRol);
+                            if (user.IdRol == 1)
+                            {
+                                return RedirectToAction("Dashboard", "Account");
+                            }
+                            else if (user.IdRol == 2)
+                            {
+                                return RedirectToAction("Index", "Cliente");
+                            }
                         }
                     }
                 }
+                ViewBag.Error = "Credenciales Incorrectas";
             }
-             ViewBag.Error = "Credenciales Incorrectas";
-             return View();
+            return View(model);
         }
 
         // GET: AccountController/Create

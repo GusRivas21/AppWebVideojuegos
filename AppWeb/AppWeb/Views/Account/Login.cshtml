@@ -65,6 +65,12 @@
                 <i class="fas fa-exclamation-circle me-2"></i> @ViewBag.Error
             </div>
         }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success bg-success text-white border-0 py-2 small mb-4">
+                <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            </div>
+        }
 
         <form asp-action="Login" method="post">
             @Html.AntiForgeryToken()
@@ -93,6 +99,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 </body>
 </html>
 
