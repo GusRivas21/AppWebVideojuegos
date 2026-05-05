@@ -1,51 +1,88 @@
-﻿@{
-    Layout = null;
-    var usuario = Context.Session.GetString("usuario");
+﻿@model List<VentaViewModel>
+@{
+    ViewData["Title"] = "Detalle de Ventas";
 }
 
-@model List<VentaViewModel>
-
-<form action="/" method="get">
-    <input type="date" name="desde" value="@ViewBag.Desde?.ToString("yyyy-MM-dd")" />
-    <input type="date" name="hasta" value="@ViewBag.Hasta?.ToString("yyyy-MM-dd")" />
-    <button type="submit">Filtrar</button>
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Usuario</th>
-            <th>VideoJuegoId</th>
-            <th>Titulo</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th>Codigo</th>
-            
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var venta in Model)
-        {
-            <tr>
-                <td>@venta.UsuarioId</td>
-                <td>@venta.VideoJuegosId</td>
-                <td>@venta.Titulo</td>
-                <td>@venta.Cantidad</td>
-                <td>@venta.Total</td>
-                <td>@venta.EstadoCompra</td>
-                <td>@venta.FechaHoraTransaccion</td>
-                <td>@venta.CodigoTransaccion</td>
-            </tr>
-        }
-    </tbody>
-
-    <div>
-        @for (int i = 1; i<= ViewBag.TotalPages; i++)
-        {
-            <a href="?pagina=@i&desde=@ViewBag.Desde&hasta=@ViewBag.Hasta">
-                @i
-             </a>
-        }
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-white"><i class="fas fa-file-invoice-dollar me-2 text-success"></i>HISTORIAL GLOBAL DE VENTAS</h2>
+        <hr class="flex-grow-1 ms-4 opacity-25" />
     </div>
+
+    <!-- FILTROS -->
+    <div class="glass-panel mb-4">
+        <form asp-action="DetalleVentas" method="get" class="row g-3">
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-info">DESDE</label>
+                <input type="date" name="desde" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Desde?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-info">HASTA</label>
+                <input type="date" name="hasta" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Hasta?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-info">CLIENTE</label>
+                <input type="text" name="cliente" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Cliente" placeholder="Nombre del cliente..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-info">VIDEOJUEGO</label>
+                <input type="text" name="videojuego" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Videojuego" placeholder="Título del juego..." />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-accent w-100 fw-bold">
+                    <i class="fas fa-search me-2"></i>BUSCAR
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive glass-panel p-0 overflow-hidden">
+        <table class="table table-steam mb-0">
+            <thead>
+                <tr>
+                    <th>USUARIO</th>
+                    <th>JUEGO</th>
+                    <th class="text-center">CANT.</th>
+                    <th class="text-end">TOTAL</th>
+                    <th class="text-center">ESTADO</th>
+                    <th>FECHA</th>
+                    <th>CÓDIGO</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var venta in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-white">@venta.NombreUsuario</td>
+                        <td>@venta.Titulo</td>
+                        <td class="text-center">@venta.Cantidad</td>
+                        <td class="text-end price">$@venta.Total</td>
+                        <td class="text-center">
+                            <span class="badge @(venta.EstadoCompra == "Completado" ? "bg-success" : "bg-warning") opacity-75">
+                                @venta.EstadoCompra
+                            </span>
+                        </td>
+                        <td class="text-muted small">@venta.FechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="font-monospace text-info small">@venta.CodigoTransaccion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGINACIÓN -->
+    <div class="mt-4 d-flex justify-content-center">
+        <nav>
+            <ul class="pagination pagination-sm">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                        <a class="page-link @(i == ViewBag.PaginaActual ? "bg-info border-info" : "bg-dark text-muted border-secondary")" 
+                           href="?pagina=@i&desde=@ViewBag.Desde?.ToString("yyyy-MM-dd")&hasta=@ViewBag.Hasta?.ToString("yyyy-MM-dd")&cliente=@ViewBag.Cliente&videojuego=@ViewBag.Videojuego">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

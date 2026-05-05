@@ -1,79 +1,82 @@
 ﻿@model IEnumerable<AppWeb.Models.Videojuego>
+@{
+    ViewData["Title"] = "Explorar Categorías";
+}
 
+<div class="container py-4">
+    <div class="text-center mb-5 animate__animated animate__fadeInDown">
+        <h2 class="fw-bold text-white mb-2">EXPLORAR LA BIBLIOTECA</h2>
+        <p class="text-muted">Encuentra tu próxima aventura por género o categoría</p>
+    </div>
 
-<div class="container mt-4">
-    <h2 class="text-white mb-4 text-center">Explora todas nuestras categorias</h2>
-
-    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
-        <a asp-controller="VideoJuegos" asp-action="Categoria" class="btn btn-outline-info rounded-pill px-4">
-            <i class="fas fa-list"></i> Ver Categorías
+    <!-- BOTONES DE ACCIÓN RÁPIDA -->
+    <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+        <a asp-controller="VideoJuegos" asp-action="NuevosJuego" class="btn btn-outline-info rounded-pill px-4 fw-bold small">
+            <i class="fas fa-star me-2"></i>NOVEDADES
         </a>
-        <a asp-controller="VideoJuegos" asp-action="NuevosJuego" class="btn btn-outline-info rounded-pill px-4">
-            <i class="fas fa-star"></i> Nuevos Juegos
-        </a>
-        <a asp-controller="VideoJuegos" asp-action="Promocion" class="btn btn-outline-info rounded-pill px-4">
-            <i class="fas fa-tags"></i> Promociones
+        <a asp-controller="VideoJuegos" asp-action="Promocion" class="btn btn-outline-success rounded-pill px-4 fw-bold small">
+            <i class="fas fa-tags me-2"></i>OFERTAS
         </a>
     </div>
 
-    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
-        <a asp-controller="VideoJuegos" asp-action="Categoria" class="btn btn-outline-light rounded-pill px-4">Todas</a>
+    <!-- FILTROS DE CATEGORÍA -->
+    <div class="glass-panel mb-5 p-3">
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            <a asp-controller="VideoJuegos" asp-action="Categoria" 
+               class="btn btn-sm rounded-pill px-4 @(ViewBag.CategoriaSeleccionada == null || ViewBag.CategoriaSeleccionada == 0 ? "active-steam" : "btn-steam-medium")">
+                TODAS
+            </a>
 
-        @if (ViewBag.TodasLasCategorias != null)
-        {
-            foreach (var nombreCat in ViewBag.TodasLasCategorias)
+            @if (ViewBag.TodasLasCategorias != null)
             {
-                <a asp-controller="VideoJuegos" asp-action="Categoria" asp-route-Categoria="@nombreCat"
-                   class="btn btn-outline-warning rounded-pill px-4">
-                    @nombreCat
-                </a>
+                foreach (var cat in ViewBag.TodasLasCategorias)
+                {
+                    <a asp-controller="VideoJuegos" asp-action="Categoria" asp-route-Categoria="@cat.idcategoria"
+                       class="btn btn-sm rounded-pill px-4 @(ViewBag.CategoriaSeleccionada == cat.idcategoria ? "active-steam" : "btn-outline-info")">
+                        @cat.categoria.ToUpper()
+                    </a>
+                }
             }
-        }
+        </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0 text-white text-uppercase">
+            @(ViewBag.NombreCategoriaSeleccionada ?? "TODOS LOS TÍTULOS")
+        </h4>
+        <hr class="flex-grow-1 ms-4 opacity-25" />
+    </div>
+
+    <div class="row g-4">
         @foreach (var juego in Model)
         {
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="card game-card h-100">
-
-                    <!-- 🔴 BADGE SUPERIOR -->
-                    <span class="position-absolute top-0 start-0 badge rounded-pill bg-danger m-2">
-                        +@juego.Edad
-                    </span>
-
-                    @if (juego.Promocion)
-                    {
-                        <div class="badge-promo bg-success text-white px-2 py-1 rounded" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
-                            <i class="fas fa-tag"></i> ¡OFERTA!
-                        </div>
-                    }
-
-                    <!-- ❤️ FAVORITO -->
-                    <div class="favorite">
-                        <i class="fa-regular fa-heart"></i>
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="game-card shadow">
+                    <div class="position-relative">
+                        <img src="@juego.imagen" class="game-img" alt="@juego.Titulo" />
+                        
+                        @if (juego.Promocion)
+                        {
+                            <span class="badge-promo position-absolute bottom-0 start-0 m-2">
+                                -% OFF
+                            </span>
+                        }
+                        
+                        <span class="badge-top position-absolute top-0 end-0 m-2">
+                            +@juego.Edad
+                        </span>
                     </div>
 
-                    <!-- IMAGEN -->
-                    <img src="@juego.imagen"
-                         class="card-img-top game-img" />
-
-                    <div class="card-body d-flex flex-column">
-
-                        <!-- TÍTULO -->
-                        <h5 class="card-title fw-bold">
-                            @juego.Titulo
-                        </h5>
-
-                        <!-- PRECIO -->
-                        <h4 class="price mt-2">
-                            $@juego.Precio
-                        </h4>
-
-                        <!-- CATEGORÍA -->
-                        <div class="d-flex align-items-center mt-auto">
-                            <i class="fa-solid fa-gamepad me-2 text-warning"></i>
-                            <span class="text-muted">@juego.idcategoria</span>
+                    <div class="card-body">
+                        <h5 class="card-title" title="@juego.Titulo">@juego.Titulo</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="price">$@juego.Precio</span>
+                            <form asp-controller="Cliente" asp-action="Comprar" method="post">
+                                <input type="hidden" name="videojuegoId" value="@juego.Id" />
+                                <button type="submit" class="btn btn-steam-green btn-sm">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -81,3 +84,16 @@
         }
     </div>
 </div>
+
+<style>
+    .btn-steam-medium {
+        background: var(--steam-blue-medium);
+        color: white;
+        border: none;
+    }
+    .active-steam {
+        background: var(--steam-blue-light);
+        color: var(--steam-dark);
+        font-weight: bold;
+    }
+</style>

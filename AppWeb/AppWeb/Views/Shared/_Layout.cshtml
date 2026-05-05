@@ -10,14 +10,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-<body class="bg-dark-custom">
+<body class="bg-dark">
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-custom shadow">
+        <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
             <div class="container">
 
-                <a class="navbar-brand fw-bold text-warning" asp-controller="Home" asp-action="Index">
-                     GameStore
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                     <i class="fa-solid fa-gamepad me-2"></i>GameStore
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavbar">
@@ -27,31 +27,77 @@
                 <div class="collapse navbar-collapse" id="menuNavbar">
 
                     <ul class="navbar-nav me-auto">
+                        @{
+                            var rol = Context.Session.GetInt32("IdRol");
+                        }
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a>
+                            @if (rol == 2)
+                            {
+                                <a class="nav-link" asp-controller="Cliente" asp-action="Index">TIENDA</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">TIENDA</a>
+                            }
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="VideoJuegos" asp-action="Categoria">CATEGORÍAS</a>
+                        </li>
+                        
 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="VideoJuegos" asp-action="Index">Videojuegos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Dashboard">Dashboard</a>
-                        </li>
+                        @if (rol == 1)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="VideoJuegos" asp-action="Index">GESTIÓN</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Dashboard">DASHBOARD</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="DetalleVentas">VENTAS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="UsuariosRegistrados">USUARIOS</a>
+                            </li>
+                        }
+                        else if (rol == 2)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cliente" asp-action="MisCompras">MIS COMPRAS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cliente" asp-action="MiCuenta">MI CUENTA</a>
+                            </li>
+                        }
                     </ul>
 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Login">
-                                Iniciar Sesión
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="btn btn-accent ms-2"
-                               asp-controller="Account" asp-action="Register">
-                                Registrarse
-                            </a>
-                        </li>
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        @if (Context.Session.GetString("usuario") != null)
+                        {
+                            <li class="nav-item me-3">
+                                <span class="text-muted small">CONECTADO COMO</span><br />
+                                <span class="text-white fw-bold">@Context.Session.GetString("usuario")</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-danger btn-sm" asp-controller="Account" asp-action="Logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                    INICIAR SESIÓN
+                                </a>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-accent"
+                                   asp-controller="Account" asp-action="Registro">
+                                    REGISTRARSE
+                                </a>
+                            </li>
+                        }
                     </ul>
 
                 </div>
@@ -59,27 +105,30 @@
         </nav>
     </header>
 
-
-    <section class="banner text-center text-white">
-        
-    </section>
-    
-    <div class="container mt-5">
+    <div class="container mt-4 pb-5">
         <main role="main">
             @RenderBody()
         </main>
     </div>
 
     
-    <footer class="footer-custom text-center py-3 mt-5">
+    <footer class="footer-custom text-center">
         <div class="container">
-            &copy; 2026 - GameStore | Todos los derechos reservados
+            <div class="row opacity-50 mb-3">
+                <div class="col">
+                    <i class="fa-brands fa-steam fa-2xl mx-2"></i>
+                    <i class="fa-brands fa-xbox fa-2xl mx-2"></i>
+                    <i class="fa-brands fa-playstation fa-2xl mx-2"></i>
+                </div>
+            </div>
+            <p class="mb-0">&copy; 2026 GameStore - Tu refugio gamer relajante</p>
+            <small class="text-muted">Desarrollado con pasión y tranquilidad</small>
         </div>
     </footer>
 
    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

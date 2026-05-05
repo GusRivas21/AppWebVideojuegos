@@ -1,0 +1,84 @@
+@model IEnumerable<AppWeb.Models.DetalleCompra>
+
+@{
+    ViewData["Title"] = "Mis Compras";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-white"><i class="fas fa-history me-2 text-info"></i>HISTORIAL DE COMPRAS</h2>
+        <hr class="flex-grow-1 ms-4 opacity-25" />
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success bg-success text-white border-0 animate__animated animate__fadeIn">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+        </div>
+    }
+
+    <!-- FILTROS -->
+    <div class="glass-panel mb-4">
+        <form action="MisCompras" method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-info">DESDE</label>
+                <input type="date" name="desde" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Desde?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-info">HASTA</label>
+                <input type="date" name="hasta" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Hasta?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-bold text-info">BUSCAR JUEGO</label>
+                <input type="text" name="videojuego" class="form-control bg-dark border-secondary text-white" value="@ViewBag.Videojuego" placeholder="Ej: Halo, Elden Ring..." />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-accent w-100 fw-bold">
+                    <i class="fas fa-filter me-2"></i>FILTRAR
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive">
+        <table class="table table-steam">
+            <thead>
+                <tr>
+                    <th>VIDEOJUEGO</th>
+                    <th>FECHA ADQUISICIÓN</th>
+                    <th>TOTAL</th>
+                    <th>ESTADO</th>
+                    <th>CÓDIGO OPERACIÓN</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detalle in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-white">@detalle.VideoJuegos.Titulo</td>
+                        <td class="text-muted">@detalle.FechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="price">$@detalle.Total</td>
+                        <td><span class="badge bg-success opacity-75">@detalle.EstadoCompra</span></td>
+                        <td class="small font-monospace text-info">@detalle.CodigoTransaccion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGINACIÓN -->
+    <div class="mt-4 d-flex justify-content-center">
+        <nav>
+            <ul class="pagination pagination-sm">
+                @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                        <a class="page-link @(i == ViewBag.PaginaActual ? "bg-info border-info" : "bg-dark text-muted border-secondary")" 
+                           href="?pagina=@i&desde=@ViewBag.Desde?.ToString("yyyy-MM-dd")&hasta=@ViewBag.Hasta?.ToString("yyyy-MM-dd")&videojuego=@ViewBag.Videojuego">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

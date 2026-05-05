@@ -7,6 +7,7 @@ namespace AppWeb.Models
         public int Id { get; set; }
         public DateTime FechaCompra { get; set; }
         public int UsuarioId { get; set; }
+        public string NombreUsuario { get; set; }
         public int VideoJuegosId { get; set; }
         public string Titulo { get; set; }
         public int Cantidad { get; set; }

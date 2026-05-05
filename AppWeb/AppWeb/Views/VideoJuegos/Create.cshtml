@@ -1,58 +1,75 @@
 ﻿@model AppWeb.Models.Videojuego
+@{
+    ViewData["Title"] = "Añadir Videojuego";
+}
 
-<h2>Crear VideoJuegos</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-panel shadow-lg animate__animated animate__fadeIn">
+                <div class="mb-4 border-bottom border-secondary pb-3">
+                    <h3 class="fw-bold mb-0 text-info"><i class="fas fa-plus-circle me-2"></i>AÑADIR NUEVO TÍTULO</h3>
+                    <p class="text-muted small mb-0">Completa la información para expandir el catálogo</p>
+                </div>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div>
-        <label>Titulo</label>
-        <input asp-for="Titulo" class="form-control" />
-        <span asp-validation-for="Titulo"></span>
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label small fw-bold text-info">TÍTULO DEL JUEGO</label>
+                            <input asp-for="Titulo" class="form-control bg-dark border-secondary text-white" placeholder="Ej: God of War" />
+                            <span asp-validation-for="Titulo" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small fw-bold text-info">PRECIO ($)</label>
+                            <input asp-for="Precio" class="form-control bg-dark border-secondary text-white" placeholder="0.00" />
+                            <span asp-validation-for="Precio" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold text-info">CATEGORÍA</label>
+                            <select asp-for="idcategoria" class="form-select bg-dark border-secondary text-white" asp-items="ViewBag.idcategoria">
+                                <option value="">-- SELECCIONAR --</option>
+                            </select>
+                            <span asp-validation-for="idcategoria" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold text-info">EDAD RECOMENDADA</label>
+                            <input asp-for="Edad" type="number" class="form-control bg-dark border-secondary text-white" placeholder="Ej: 18" />
+                            <span asp-validation-for="Edad" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-info">DESCRIPCIÓN</label>
+                        <textarea asp-for="Descripcion" class="form-control bg-dark border-secondary text-white" rows="4" placeholder="Escribe una breve reseña del juego..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-info">IMAGEN DE PORTADA</label>
+                        <input type="file" name="archivoImagen" class="form-control bg-dark border-secondary text-white" />
+                        <div class="form-text text-muted smaller">Formatos permitidos: JPG, PNG, WEBP.</div>
+                    </div>
+
+                    <div class="form-check mb-4 p-3 bg-dark bg-opacity-25 rounded border border-secondary border-opacity-25">
+                        <input asp-for="Promocion" type="checkbox" class="form-check-input ms-0 me-2" id="checkPromo" />
+                        <label class="form-check-label text-warning small fw-bold" for="checkPromo">
+                            ¿ACTIVAR PROMOCIÓN / OFERTA ESPECIAL?
+                        </label>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-accent px-4 py-2 fw-bold">
+                            <i class="fas fa-save me-2"></i>GUARDAR TÍTULO
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2">
+                            CANCELAR
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label>Precio</label>
-        <input asp-for="Precio" class="form-control" />
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <span asp-validation-for="Precio"></span>
-    </div>
-
-    @* <div>
-        <label>Categoria</label>
-        <input asp-for="idcategoria" class="form-control" />
-        <span asp-validation-for="idcategoria"></span>
-    </div> *@
-
-    <div class="form-group">
-        <label asp-for="idcategoria" class="control-label">Categoría</label>
-        <select asp-for="idcategoria" class="form-control" asp-items="ViewBag.idcategoria">
-            <option value="">-- Seleccione una Categoría --</option>
-        </select>
-        <span asp-validation-for="idcategoria" class="text-danger"></span>
-    </div>
-
-    <div class="mt-3">
-        <label>Clasificación de Edad</label>
-        <input asp-for="Edad" type="number" class="form-control" placeholder="Indique la edad mínima" />
-        <span asp-validation-for="Edad" class="text-danger"></span>
-    </div>
-
-    <div class="form-check mt-3 mb-3">
-        <input asp-for="Promocion" type="checkbox" class="form-check-input" id="checkPromo" />
-        <label class="form-check-label" for="checkPromo">
-            ¿Este juego está en Promoción?
-        </label>
-    </div>
-
-    <div>
-        <label>Descripción</label>
-        <textarea asp-for="Descripcion" class="form-control"></textarea>
-    </div>
-
-    <div>
-        <label>Imagen</label>
-        <input type="file" name="archivoImagen" class="form-control"/>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+</div>
 

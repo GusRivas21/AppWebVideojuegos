@@ -4,49 +4,59 @@
     ViewData["Title"] = "Lista de Videojuegos";
 }
 
-<h2>Lista de Videojuegos</h2>
+<div class="glass-panel mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Gestión de Biblioteca</h2>
+        <a asp-action="Create" class="btn btn-accent">
+            <i class="fas fa-plus me-2"></i>AÑADIR JUEGO
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Agregar Nuevo Videojuego</a>
-</p>
-
-<table class="table table-striped mt-3">
-    <thead>
-
-        <tr>
-            <th>Título</th>
-            <th>Imagen</th>
-            <th>Precio</th>
-            <th>Categoría</th>
-            <th>Edad</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var juego in Model)
-        {
-            <tr class="text-white">
-                <td>@juego.Titulo</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(juego.imagen))
-                    {
-                        <img src="@juego.imagen" style="width:80px; height:60px; object-fit:cover; border-radius:4px;" />
-                    }
-                    else
-                    {
-                        <span>Sin imagen</span>
-                    }
-                </td>
-                <td>$@juego.Precio</td>
-                <td>@juego.Categoria.categoria</td>
-                <td>@juego.Edad</td>
-                <td>@juego.Descripcion</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@juego.Id" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@juego.Id" class="btn btn-sm btn-danger">Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-steam">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Imagen</th>
+                    <th>Precio</th>
+                    <th>Categoría</th>
+                    <th>Edad</th>
+                    <th class="d-none d-lg-table-cell">Descripción</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var juego in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-white">@juego.Titulo</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(juego.imagen))
+                            {
+                                <img src="@juego.imagen" style="width:60px; height:45px; object-fit:cover; border: 1px solid var(--steam-blue-medium);" />
+                            }
+                            else
+                            {
+                                <span class="text-muted small">SIN IMAGEN</span>
+                            }
+                        </td>
+                        <td class="price">$@juego.Precio</td>
+                        <td><span class="badge bg-secondary">@juego.Categoria.categoria</span></td>
+                        <td><span class="badge-top">+@juego.Edad</span></td>
+                        <td class="d-none d-lg-table-cell small text-truncate" style="max-width: 200px;">@juego.Descripcion</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Edit" asp-route-id="@juego.Id" class="btn btn-steam-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@juego.Id" class="btn btn-steam-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

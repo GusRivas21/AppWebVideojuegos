@@ -1,165 +1,244 @@
-﻿@{
-    Layout = null;
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Dashboard de Administración";
     var usuario = Context.Session.GetString("usuario");
 }
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <title>Dashboard</title>
-
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="https://code.highcharts.com/themes/adaptive.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <style>
-            body {
-                background-color: #f5f7fb;
-            }
-
-            .navbar-custom {
-                background: linear-gradient(90deg, #1e3c72, #2a5298);
-            }
-
-            .navbar-brand {
-                font-weight: bold;
-                color: white !important;
-            }
-
-            .user-info {
-                color: white;
-                font-weight: 500;
-            }
-
-            .btn-logout {
-                border-radius: 10px;
-            }
-
-            .dashboard-container {
-                padding: 30px;
-            }
-
-            .card-placeholder {
-                height: 250px;
-                border-radius: 15px;
-                border: 2px dashed #ccc;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #999;
-                font-weight: 500;
-                background: white;
-            }
-
-            .welcome-box {
-                background: white;
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 20px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-custom px-4">
-        <a class="navbar-brand" href="#">Administración de sistema</a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <span class="user-info">
-                👤 @usuario
-            </span>
-
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="btn btn-light btn-sm btn-logout" asp-controller="Home" asp-action="Index">Inicio</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="btn btn-light btn-sm btn-logout" asp-controller="Account" asp-action="DetalleVentas">Detalle Ventas</a>
-                </li>
-            </ul>
-
-            <a asp-controller="Account" asp-action="Logout" class="btn btn-light btn-sm btn-logout">
-                Cerrar Sesión
-            </a>
-        </div>
-    </nav>
-    <div class="dashboard-container">
-
-      
-        <div class="welcome-box">
-            <h4>Bienvenido, @usuario 👋</h4>
-            <p class="text-muted mb-0">
-                Este es tu panel principal. Aquí podrás visualizar estadísticas y gestionar el sistema.
-            </p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-6">
-                <select id="filtroCategoria" class="form-select">
-                    <option value="">Todas las Categorías</option>
-            
-                    @if (ViewBag.ListaCategorias != null)
-                    {
-                        foreach (var cat in ViewBag.ListaCategorias)
-                        {
-                            <option value="@cat.categoria">@cat.categoria</option>
-                        }
-                    }
-                </select>
-                @* Grafica de Juegos por Categoria *@
-                <div id="container"></div>
+<div class="container py-4">
+    <div class="glass-panel mb-4 animate__animated animate__fadeIn">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="fw-bold mb-1 text-info">BIENVENIDO, @usuario.ToUpper()</h3>
+                <p class="text-muted small mb-0">Panel de control y estadísticas globales del sistema</p>
+            </div>
+            <div class="text-end">
+                <i class="fas fa-chart-line fa-3x text-info opacity-25"></i>
             </div>
         </div>
-        
     </div>
 
-</body>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="glass-panel h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold text-uppercase small letter-spacing-1 mb-0">Distribución de Videojuegos</h5>
+                    <div style="width: 250px;">
+                        <select id="filtroCategoria" class="form-select form-select-sm bg-dark border-secondary text-white">
+                            <option value="">TODAS LAS CATEGORÍAS</option>
+                            @if (ViewBag.ListaCategorias != null)
+                            {
+                                foreach (var cat in ViewBag.ListaCategorias)
+                                {
+                                    <option value="@cat.categoria">@cat.categoria.ToUpper()</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="container" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
 
-<script>
-    $(document).ready(function() {
-        cargarGrafica();
-    });
+        <div class="col-lg-4">
+            <div class="row g-4 h-100">
+                <div class="col-12">
+                    <div class="feature-card h-100 d-flex flex-column justify-content-center">
+                        <i class="fas fa-gamepad mb-2"></i>
+                        <h2 class="fw-bold text-white mb-0">@ViewBag.TotalJuegos</h2>
+                        <p class="text-muted small text-uppercase fw-bold">Juegos en Catálogo</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="feature-card h-100 d-flex flex-column justify-content-center" style="border-left: 4px solid var(--steam-green);">
+                        <i class="fas fa-shopping-cart mb-2 text-success"></i>
+                        <h2 class="fw-bold text-white mb-0">@ViewBag.TotalVentas</h2>
+                        <p class="text-muted small text-uppercase fw-bold">Ventas Totales</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mt-2">
+        <div class="col-lg-4">
+            <div class="glass-panel h-100">
+                <h5 class="fw-bold text-uppercase small letter-spacing-1 mb-4">Clasificación por Edad</h5>
+                <div id="graficaClasificacion" style="height: 300px; width: 100%;"></div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="glass-panel h-100">
+                <h5 class="fw-bold text-uppercase small letter-spacing-1 mb-4">Juegos en Promoción</h5>
+                <div id="graficaPromocion" style="height: 300px; width: 100%;"></div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="glass-panel h-100">
+                <h5 class="fw-bold text-uppercase small letter-spacing-1 mb-4">Registros de Usuarios</h5>
+                <div id="graficaRegistros" style="height: 300px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    function cargarGrafica(categoriaFiltro = "") {
-        $.get('/Account/ObtenerDatos', { categoria: categoriaFiltro }, function(data) {
-            
+@section Scripts {
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/themes/dark-unica.js"></script>
 
-            var categorias = data.map(x => x.categoria);
-            var totales = data.map(x => x.total);
-
-            Highcharts.chart('container', {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Juegos por Categoria'
-                },
-                xAxis: {
-                    categories: categorias
-                },
-                yAxis: {
-                    title: {
-                        text: 'Total de Juegos'
-                    }
-                },
-                series: [{
-                    name: 'Juegos',
-                    data: totales
-                }]
-            });
+    <script>
+        $(document).ready(function() {
+            cargarGrafica();
+            cargarGraficaClasificacion();
+            cargarGraficaPromocion();
+            cargarGraficaRegistros();
         });
-    }
 
-    $('#filtroCategoria').change(function() {
-        cargarGrafica($(this).val());
-    });
-</script>
+        function cargarGrafica(categoriaFiltro = "") {
+            $.get('/Account/ObtenerDatos', { categoria: categoriaFiltro }, function(data) {
+                var categorias = data.map(x => x.categoria);
+                var totales = data.map(x => x.total);
 
-</html>
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'column',
+                        backgroundColor: 'transparent'
+                    },
+                    title: { text: null },
+                    xAxis: {
+                        categories: categorias,
+                        gridLineColor: 'rgba(255,255,255,0.05)'
+                    },
+                    yAxis: {
+                        title: { text: 'CANTIDAD DE TÍTULOS' },
+                        gridLineColor: 'rgba(255,255,255,0.05)'
+                    },
+                    legend: { enabled: false },
+                    tooltip: {
+                        backgroundColor: '#1b2838',
+                        style: { color: '#ffffff' }
+                    },
+                    plotOptions: {
+                        column: {
+                            borderRadius: 4,
+                            color: '#66c0f4'
+                        }
+                    },
+                    series: [{
+                        name: 'Videojuegos',
+                        data: totales
+                    }]
+                });
+            });
+        }
+
+        function cargarGraficaClasificacion() {
+            $.get('/Account/ObtenerDatosClasificacion', function(data) {
+                var categorias = data.map(x => x.clasificacion);
+                var totales = data.map(x => x.total);
+
+                Highcharts.chart('graficaClasificacion', {
+                    chart: {
+                        type: 'bar',
+                        backgroundColor: 'transparent'
+                    },
+                    title: { text: null },
+                    xAxis: {
+                        categories: categorias,
+                        gridLineColor: 'rgba(255,255,255,0.05)'
+                    },
+                    yAxis: {
+                        title: { text: 'CANTIDAD' },
+                        gridLineColor: 'rgba(255,255,255,0.05)'
+                    },
+                    legend: { enabled: false },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            color: '#c7d5e0'
+                        }
+                    },
+                    series: [{
+                        name: 'Juegos',
+                        data: totales
+                    }]
+                });
+            });
+        }
+
+        function cargarGraficaPromocion() {
+            $.get('/Account/ObtenerDatosPromocion', function(data) {
+                var pieData = data.map(x => ({ name: x.estado, y: x.total }));
+
+                Highcharts.chart('graficaPromocion', {
+                    chart: {
+                        type: 'pie',
+                        backgroundColor: 'transparent'
+                    },
+                    title: { text: null },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.y}',
+                                style: { color: 'white' }
+                            },
+                            colors: ['#5c7e10', '#a34c31']
+                        }
+                    },
+                    series: [{
+                        name: 'Porcentaje',
+                        colorByPoint: true,
+                        data: pieData
+                    }]
+                });
+            });
+        }
+
+        function cargarGraficaRegistros() {
+            $.get('/Account/ObtenerDatosRegistros', function(data) {
+                console.log("Datos de registros:", data);
+                var meses = data.map(x => x.mes);
+                var totales = data.map(x => x.total);
+
+                Highcharts.chart('graficaRegistros', {
+                    chart: {
+                        type: 'area',
+                        backgroundColor: 'transparent'
+                    },
+                    title: { text: null },
+                    xAxis: {
+                        categories: meses,
+                        gridLineColor: 'rgba(255,255,255,0.05)'
+                    },
+                    yAxis: {
+                        title: { text: 'NUEVOS USUARIOS' },
+                        gridLineColor: 'rgba(255,255,255,0.05)'
+                    },
+                    plotOptions: {
+                        area: {
+                            marker: { radius: 4 },
+                            lineWidth: 2,
+                            states: { hover: { lineWidth: 3 } }
+                        }
+                    },
+                    series: [{
+                        name: 'Usuarios',
+                        data: totales,
+                        color: '#66c0f4',
+                        fillOpacity: 0.3
+                    }]
+                });
+            });
+        }
+
+        $('#filtroCategoria').change(function() {
+            cargarGrafica($(this).val());
+        });
+    </script>
+}

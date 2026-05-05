@@ -1,4 +1,4 @@
-﻿@model AppWeb.Models.Login
+@model AppWeb.Models.RegistroViewModel
 
 @{
     Layout = null;
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar Sesión - GameStore</title>
+    <title>Crear Cuenta - GameStore</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -52,11 +52,11 @@
 </head>
 <body>
 
-    <div class="login-box glass-panel shadow-lg animate__animated animate__fadeIn">
+    <div class="login-box glass-panel shadow-lg">
 
         <div class="text-center mb-4">
-            <h2 class="fw-bold"><i class="fa-solid fa-gamepad me-2 text-info"></i>GAMESTORE</h2>
-            <p class="text-muted small">CONECTA CON TU BIBLIOTECA</p>
+            <h2 class="fw-bold"><i class="fa-solid fa-user-plus me-2 text-info"></i>UNIRSE</h2>
+            <p class="text-muted small">CREA TU IDENTIDAD GAMER</p>
         </div>
 
         @if (ViewBag.Error != null)
@@ -65,27 +65,37 @@
                 <i class="fas fa-exclamation-circle me-2"></i> @ViewBag.Error
             </div>
         }
-
-        <form asp-action="Login" method="post">
-            @Html.AntiForgeryToken()
-            <div class="mb-4">
-                <label class="form-label">Nombre de cuenta</label>
-                <input asp-for="correo" class="form-control" autocomplete="off" />
-                <span asp-validation-for="correo" class="text-danger small"></span>
+        @if (ViewBag.Success != null)
+        {
+            <div class="alert alert-success bg-success text-white border-0 py-2 small mb-4">
+                <i class="fas fa-check-circle me-2"></i> @ViewBag.Success
             </div>
-            <div class="mb-4">
-                <label class="form-label">Contraseña</label>
+        }
+
+        <form asp-action="Registro" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">Nombre Completo</label>
+                <input asp-for="Nombre" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Nombre" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Dirección de Correo</label>
+                <input asp-for="Correo" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Correo" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nueva Contraseña</label>
                 <input asp-for="Contrasena" type="password" class="form-control" />
                 <span asp-validation-for="Contrasena" class="text-danger small"></span>
             </div>
 
-            <button type="submit" class="btn btn-accent w-100 py-2 mb-3">
-                INICIAR SESIÓN
+            <button type="submit" class="btn btn-accent w-100 py-2 mt-3">
+                COMPLETAR REGISTRO
             </button>
 
             <div class="text-center mt-4">
-                <p class="small text-muted mb-1">¿Aún no eres parte de la comunidad?</p>
-                <a href="@Url.Action("Registro", "Account")" class="text-info text-decoration-none fw-bold">CREAR UNA CUENTA GRATIS</a>
+                <a href="@Url.Action("Login", "Account")" class="text-info text-decoration-none fw-bold small">¿YA TIENES UNA CUENTA?</a>
             </div>
         </form>
 
@@ -95,37 +105,3 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-@* @model AppWeb.Models.Login
-
-@{
-    Layout = null;
-}
-
-<div class="container mt-5">
-    <div class="col-md-4 mx-auto">
-        <div class="card p-4 shadow rounded-4">
-            <h3 class="text-center mb-3">Iniciar Sesion</h3>
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger">
-                    @ViewBag.Error
-                </div>
-            }
-            <form method="post" asp-action="login">
-                <div class="mb-3">
-                    <label>Correo</label>
-                    <input type="email" class="form-control" asp-for="correo" required />
-                </div>
-                <div class="mb-3">
-                    <label>Contraseña</label>
-                    <input type="password" class="form-control" asp-for="Contrasena" required />
-                </div>
-                <button class="btn btn-accent w-100">
-                    Ingresar
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
- *@

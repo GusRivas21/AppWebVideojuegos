@@ -13,8 +13,10 @@ namespace AppWeb.Models
         [ForeignKey("VideoJuegosId")]
         public Videojuego VideoJuegos { get; set; }
 
+
         public int Cantidad { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
 
         public string EstadoCompra { get; set; }

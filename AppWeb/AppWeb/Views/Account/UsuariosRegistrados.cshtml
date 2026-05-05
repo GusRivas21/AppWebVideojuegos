@@ -1,0 +1,58 @@
+@model IEnumerable<AppWeb.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios Registrados";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-white"><i class="fas fa-users me-2 text-info"></i>COMUNIDAD DE USUARIOS</h2>
+        <hr class="flex-grow-1 ms-4 opacity-25" />
+    </div>
+
+    <div class="glass-panel p-0 overflow-hidden shadow-lg animate__animated animate__fadeIn">
+        <div class="table-responsive">
+            <table class="table table-steam mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NOMBRE DE USUARIO</th>
+                        <th>CORREO ELECTRÓNICO</th>
+                        <th class="text-center">ROL / RANGO</th>
+                        <th class="text-end">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <td class="text-muted small">#@usuario.Id</td>
+                            <td class="fw-bold text-white">@usuario.Nombre</td>
+                            <td class="text-info">@usuario.Correo</td>
+                            <td class="text-center">
+                                <span class="badge @(usuario.IdRol == 1 ? "bg-danger" : "bg-primary") opacity-75 text-uppercase" style="letter-spacing: 1px;">
+                                    <i class="fas @(usuario.IdRol == 1 ? "fa-shield-halved" : "fa-user") me-1"></i>
+                                    @usuario.Roles.Rol
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-info" title="Ver Perfil">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                @if (usuario.IdRol != 1)
+                                {
+                                    <button class="btn btn-sm btn-outline-danger ms-1" title="Restringir Acceso">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <p class="text-muted small">Mostrando @Model.Count() miembros registrados en la plataforma</p>
+    </div>
+</div>

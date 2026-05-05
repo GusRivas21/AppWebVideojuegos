@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppWeb.Models
 {
@@ -15,16 +16,18 @@ namespace AppWeb.Models
         [EmailAddress]
         public string Correo { get; set; }
 
-        [Required]
         [StringLength(255)]
-        public byte[] Contrasena { get; set; }
+        public byte[]? Contrasena { get; set; }
 
         [StringLength(255)]
-        public string salt { get; set; }
+        public string? salt { get; set; }
 
         [Required]
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
-  
+        [ForeignKey("IdRol")]
+        public Roles Roles { get; set; }
+
+        public int IdRol { get; set; }
     }
 }

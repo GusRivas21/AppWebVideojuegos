@@ -1,0 +1,57 @@
+@model AppWeb.Models.MiCuentaViewModel
+
+@{
+    ViewData["Title"] = "Mi Cuenta";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="glass-panel shadow-lg animate__animated animate__fadeInUp">
+                <div class="mb-4 border-bottom border-secondary pb-3">
+                    <h3 class="fw-bold mb-0 text-info"><i class="fas fa-user-circle me-2"></i>GESTIÓN DE PERFIL</h3>
+                    <p class="text-muted small mb-0">Mantén tus datos actualizados</p>
+                </div>
+
+                @if (ViewBag.Success != null)
+                {
+                    <div class="alert alert-success bg-success text-white border-0 animate__animated animate__pulse">
+                        <i class="fas fa-check-circle me-2"></i> @ViewBag.Success
+                    </div>
+                }
+
+                <form asp-action="MiCuenta" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Correo Electrónico</label>
+                        <input asp-for="Correo" class="form-control bg-dark border-secondary text-white" readonly style="opacity: 0.7;" />
+                        <div class="form-text text-muted smaller">El correo no puede ser modificado.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-uppercase text-info">Nombre de Usuario</label>
+                        <input asp-for="Nombre" class="form-control bg-dark border-secondary text-white" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-uppercase text-info">Cambiar Contraseña</label>
+                        <input asp-for="NuevaContrasena" type="password" class="form-control bg-dark border-secondary text-white" placeholder="••••••••" />
+                        <div class="form-text text-muted smaller">Deja en blanco si no deseas cambiarla.</div>
+                        <span asp-validation-for="NuevaContrasena" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-accent w-100 py-2 fw-bold mt-2">
+                        GUARDAR CAMBIOS
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+}

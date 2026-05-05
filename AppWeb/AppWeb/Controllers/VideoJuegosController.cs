@@ -169,12 +169,14 @@ namespace AppWeb.Controllers
 
         public async Task<IActionResult> Categoria(int? Categoria)
         {
-            ViewBag.TodasLasCategorias = await _context.Categorias.ToListAsync();
-
-            //ViewBag.TodasLasCategorias = await _context.Videojuegos
-            //.Select(v => v.idcategoria)
-            //.Distinct()
-            //.ToListAsync();
+            var todasCategorias = await _context.Categorias.ToListAsync();
+            ViewBag.TodasLasCategorias = todasCategorias;
+            ViewBag.CategoriaSeleccionada = Categoria;
+            
+            if (Categoria != null && Categoria != 0)
+            {
+                ViewBag.NombreCategoriaSeleccionada = todasCategorias.FirstOrDefault(c => c.idcategoria == Categoria)?.categoria;
+            }
 
             var juegos = (Categoria == null || Categoria == 0)
                 ? await _context.Videojuegos.ToListAsync()

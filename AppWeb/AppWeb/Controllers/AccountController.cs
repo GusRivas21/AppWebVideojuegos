@@ -1,6 +1,7 @@
 ﻿using AppWeb.Coll;
 using AppWeb.Data;
 using AppWeb.Models;
+using AppWeb.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -23,11 +24,75 @@ namespace AppWeb.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Registro()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registro(RegistroViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var existeUsuario = await _context.Usuarios.AnyAsync(u => u.Correo == model.Correo);
+                if (existeUsuario)
+                {
+                    ViewBag.Error = "El correo ya está registrado.";
+                    return View(model);
+                }
+
+                // Generar salt
+                string salt = Guid.NewGuid().ToString();
+                string saltedPassword = salt + model.Contrasena;
+
+                byte[] hashBytes;
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] inputBytes = Encoding.Unicode.GetBytes(saltedPassword);
+                    hashBytes = sha256.ComputeHash(inputBytes);
+                }
+
+                var nuevoUsuario = new Usuario
+                {
+                    Nombre = model.Nombre,
+                    Correo = model.Correo,
+                    salt = salt,
+                    Contrasena = hashBytes,
+                    FechaRegistro = DateTime.Now,
+                    IdRol = 2 // Asignar rol de Cliente por defecto
+                };
+
+                _context.Usuarios.Add(nuevoUsuario);
+                await _context.SaveChangesAsync();
+
+                ViewBag.Success = "Registro exitoso. Ahora puedes iniciar sesión.";
+                return View(new RegistroViewModel());
+            }
+
+            return View(model);
+        }
+
         [SessionAuthorize]
         public IActionResult Dashboard()
         {
-            ViewBag.ListaCategorias = _context.Categorias.ToList();
-            return View();
+            var rol = HttpContext.Session.GetInt32("IdRol");
+            if (rol == 1) 
+            {
+                // Si es admin, mostrar el dashboard
+                ViewBag.ListaCategorias = _context.Categorias.ToList();
+                ViewBag.TotalJuegos = _context.Videojuegos.Count();
+                ViewBag.TotalVentas = _context.Detalle_Compra.Count(); // O la métrica de ventas que prefieras
+                
+                return View();
+            }
+            else if (rol == 2)
+            {
+                return RedirectToAction("Index", "Cliente");
+            }
+
+            return RedirectToAction("Login");
         }
 
         public IActionResult ObtenerDatos(string categoria)
@@ -53,13 +118,65 @@ namespace AppWeb.Controllers
             return Json(data);
         }
 
+        public IActionResult ObtenerDatosClasificacion()
+        {
+            var data = _context.Videojuegos
+                .GroupBy(v => v.Edad)
+                .Select(g => new
+                {
+                    clasificacion = g.Key == null ? "Sin Clasificar" : "+" + g.Key,
+                    total = g.Count()
+                })
+                .OrderBy(x => x.clasificacion)
+                .ToList();
+
+            return Json(data);
+        }
+
+        public IActionResult ObtenerDatosPromocion()
+        {
+            var data = _context.Videojuegos
+                .GroupBy(v => v.Promocion)
+                .Select(g => new
+                {
+                    estado = g.Key ? "En Oferta" : "Precio Regular",
+                    total = g.Count()
+                }).ToList();
+
+            return Json(data);
+        }
+
+        public IActionResult ObtenerDatosRegistros()
+        {
+            var rawData = _context.Usuarios
+                .GroupBy(u => new { u.FechaRegistro.Year, u.FechaRegistro.Month })
+                .Select(g => new
+                {
+                    Anio = g.Key.Year,
+                    Mes = g.Key.Month,
+                    Total = g.Count()
+                })
+                .OrderBy(x => x.Anio)
+                .ThenBy(x => x.Mes)
+                .ToList();
+
+            var data = rawData.Select(x => new
+            {
+                mes = new DateTime(x.Anio, x.Mes, 1).ToString("MMMM yyyy", new System.Globalization.CultureInfo("es-ES")),
+                total = x.Total
+            }).ToList();
+
+            return Json(data);
+        }
+
         [SessionAuthorize]
-        public async Task<IActionResult> DetalleVentas(DateTime? desde, DateTime? hasta, int pagina=1)
+        public async Task<IActionResult> DetalleVentas(DateTime? desde, DateTime? hasta, string cliente, string videojuego, int pagina=1)
         {
             int paginador = 12;
 
             var query = _context.Detalle_Compra
                 .Include(d => d.Compra)
+                .ThenInclude(c => c.Usuarios)
                 .Include(d => d.VideoJuegos)
                 .AsQueryable();
 
@@ -70,6 +187,14 @@ namespace AppWeb.Controllers
             if (hasta.HasValue)
             {
                 query = query.Where(d => d.FechaHoraTransaccion <= hasta.Value);
+            }
+            if (!string.IsNullOrEmpty(cliente))
+            {
+                query = query.Where(d => d.Compra.Usuarios.Nombre.Contains(cliente));
+            }
+            if (!string.IsNullOrEmpty(videojuego))
+            {
+                query = query.Where(d => d.VideoJuegos.Titulo.Contains(videojuego));
             }
 
             var total_registros = await query.CountAsync();
@@ -83,6 +208,8 @@ namespace AppWeb.Controllers
                     FechaCompra = d.FechaHoraTransaccion,
                     VideoJuegosId = d.VideoJuegosId,
                     Titulo = d.VideoJuegos.Titulo,
+                    UsuarioId = d.Compra.UsuarioId,
+                    NombreUsuario = d.Compra.Usuarios.Nombre,
                     Cantidad = d.Cantidad,
                     Total = d.Total,
                     EstadoCompra = d.EstadoCompra,
@@ -94,6 +221,8 @@ namespace AppWeb.Controllers
             ViewBag.PaginaActual = pagina;
             ViewBag.Desde = desde;
             ViewBag.Hasta = hasta;
+            ViewBag.Cliente = cliente;
+            ViewBag.Videojuego = videojuego;
     
             return View(data);
         }
@@ -105,27 +234,26 @@ namespace AppWeb.Controllers
             var user = _context.Usuarios
                 .FirstOrDefault(u => u.Correo == model.correo);
 
-            if (user != null)
+            if (user != null && user.salt != null && user.Contrasena != null)
             { 
                 string saltedPassword = user.salt + model.Contrasena;
 
                 using (SHA256 sha256 = SHA256.Create())
                 {
-                    //byte[] inputBytes = Encoding.UTF8.GetBytes(saltedPassword);
                     byte[] inputBytes = Encoding.Unicode.GetBytes(saltedPassword);
                     byte[] hashBytes = sha256.ComputeHash(inputBytes);
-
-                    //Console.WriteLine("Salt BD" + user.salt);
-                    //Console.WriteLine("Password input" + model.Contrasena);
-                    //Console.WriteLine("Salted: " + (user.salt + model.Contrasena));
-
-                    //Console.WriteLine("Hash generado: " + Convert.ToBase64String(hashBytes));
-                    //Console.WriteLine("Hash BD: " + Convert.ToBase64String(user.Contrasena));
 
                     if (hashBytes.SequenceEqual(user.Contrasena))
                     { 
                         HttpContext.Session.SetString("usuario", user.Nombre);
-                        return RedirectToAction("Dashboard", "Account");
+                        HttpContext.Session.SetInt32("IdRol", user.IdRol);
+                        if (user.IdRol == 1)
+                        {
+                             return RedirectToAction("Dashboard", "Account");
+                        }else if (user.IdRol == 2)
+                        {
+                             return RedirectToAction("Index", "Cliente");
+                        }
                     }
                 }
             }
@@ -138,6 +266,19 @@ namespace AppWeb.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
+        }
+
+        [SessionAuthorize]
+        public async Task<IActionResult> UsuariosRegistrados()
+        {
+            var rol = HttpContext.Session.GetInt32("IdRol");
+            if (rol != 1)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var usuarios = await _context.Usuarios.Include(u => u.Roles).ToListAsync();
+            return View(usuarios);
         }
     }
 }
